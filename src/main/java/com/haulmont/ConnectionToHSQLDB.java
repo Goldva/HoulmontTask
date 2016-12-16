@@ -1,6 +1,7 @@
 package com.haulmont;
 
 import com.haulmont.DataFromTable.Client;
+import com.haulmont.DataFromTable.DataTable;
 import com.haulmont.DataFromTable.Order;
 
 import java.sql.*;
@@ -9,9 +10,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-/**
- * Created by ermakov on 15.12.2016.
- */
 public class ConnectionToHSQLDB {
     private Connection conn;
     private String columnsOrders = "";
@@ -118,8 +116,8 @@ public class ConnectionToHSQLDB {
     }
 
 
-    public List<Client> getTableClients() {
-        List<Client> clients = new ArrayList<>();
+    public List<DataTable> getTableClients() {
+        List<DataTable> clients = new ArrayList<>();
         try (Statement statement = conn.createStatement()) {
             String sql;
             sql = "SELECT * FROM clients";
@@ -141,8 +139,8 @@ public class ConnectionToHSQLDB {
         return null;                                            //TODO: Подумать над return
     }
 
-    public List<Order> getTableOrders() {
-        List<Order> orders = new ArrayList<>();
+    public List<DataTable> getTableOrders() {
+        List<DataTable> orders = new ArrayList<>();
         try (Statement statement = conn.createStatement()) {
             String sql;
             sql = "SELECT * FROM orders NATURAL JOIN clients";

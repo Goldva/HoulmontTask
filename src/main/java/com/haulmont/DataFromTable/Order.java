@@ -1,11 +1,9 @@
 package com.haulmont.DataFromTable;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
-/**
- * Created by ermakov on 16.12.2016.
- */
-public class Order {
+public class Order implements DataTable{
     private int orderId;
     private String aboutOrder;
     private Client client;
@@ -13,6 +11,8 @@ public class Order {
     private Date endDate;
     private double price;
     private String status;
+
+    private SimpleDateFormat sdf;
 
     public Order(int orderId, Client client, Date createDate) {
         this.orderId = orderId;
@@ -63,4 +63,11 @@ public class Order {
     public Date getCreateDate() {
         return createDate;
     }
+
+    @Override
+    public Object[] getAsArrayObjects(){
+        return new Object[]{orderId, aboutOrder, client.getFirstName(), client.getSurName(), client.getTelephon(),
+                createDate, endDate, price, status};
+    }
+
 }
