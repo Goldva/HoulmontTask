@@ -1,6 +1,7 @@
 package com.haulmont;
 
 import com.haulmont.DataFromTable.Client;
+import com.haulmont.DataFromTable.Order;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ConnectionToHSQLDB {
 
     private void getConnection() throws SQLException {
         try {
-            String path = "/src/main/resources/dataDB/";
+            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
             String dbname = "mydb";
             String connectionString = "jdbc:hsqldb:file:" + path + dbname;
             String login = "joe";
@@ -109,7 +110,7 @@ public class ConnectionToHSQLDB {
 
     public void deleteTable(String tableName, String id) {
         try(Statement statement = conn.createStatement()) {
-            String sql = String.format("DELETE FROM %s WHERE id = '%s'", tableName, id);
+            String sql = String.format("DELETE FROM %s WHERE id = '%s'", tableName, id);        //TODO: Нельзя удалить клиента если есть заказ
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,53 +120,56 @@ public class ConnectionToHSQLDB {
 
     public List<Client> getTableClients() {
         List<Client> clients = new ArrayList<>();
-        int id;
-        String firstName;
-        String surName;
-        String middleName;
-        String telephon;
         try (Statement statement = conn.createStatement()) {
             String sql;
             sql = "SELECT * FROM clients";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
-                id = resultSet.getInt("clients_id");
-                firstName = resultSet.getNString("firstname");
-                surName = resultSet.getNString("surname");
-                middleName = resultSet.getNString("midllename");
-                telephon = resultSet.getNString("tel");
+                Client client = new Client(resultSet.getInt("clients_id"));
+                client.setFirstName(resultSet.getNString("firstname"));
+                client.setSurName(resultSet.getNString("surname"));
+                client.setMiddleName(resultSet.getNString("midllename"));
+                client.setTelephon(resultSet.getNString("tel"));
 
-                clients.add(new Client(id, firstName, surName, middleName, telephon));
+                clients.add(client);
             }
             return clients;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return null;                                            //TODO: Подумать над return
     }
 
-//    public List<String> printTable(String tableName) {
-//        List<String> rows = new ArrayList<>();
-//        try(Statement statement = conn.createStatement()) {
-//            String sql = null;
-//            if (tableName.equals("orders")) {
-//                sql = "SELECT * FROM orders NATURAL JOIN clients";
-//            } else if(tableName.equals("clients")){
-//                sql = "SELECT * FROM clients";
-//            }
-//            ResultSet resultSet = statement.executeQuery(sql);
-//            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-//            int columnCount = resultSetMetaData.getColumnCount();
-//
-//            while (resultSet.next()) {
-//            }
-//            return rows;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    public List<Order> getTableOrders() {
+        List<Order> orders = new ArrayList<>();
+        try (Statement statement = conn.createStatement()) {
+            String sql;
+            sql = "SELECT * FROM orders NATURAL JOIN clients";
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                Client client = new Client(resultSet.getInt("clients_id"));
+                client.setFirstName(resultSet.getNString("firstname"));
+                client.setSurName(resultSet.getNString("surname"));
+                client.setMiddleName(resultSet.getNString("midllename"));
+                client.setTelephon(resultSet.getNString("tel"));
+
+
+                Order order  = new Order(resultSet.getInt("orders_id"), client, resultSet.getDate("create_date"));
+                order.setAboutOrder(resultSet.getString("about_order"));
+                order.setEndDate(resultSet.getDate("end_date"));
+                order.setPrice(resultSet.getDouble("price"));
+                order.setStatus(resultSet.getString("status"));
+
+                orders.add(order);
+            }
+            return orders;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;                                            //TODO: Подумать над return
+    }
 
     public void closeConnection() {
         try(Statement statement = conn.createStatement()) {
