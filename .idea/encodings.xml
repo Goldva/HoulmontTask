@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lib" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/ConnectionToHSQLDB.java" charset="windows-1251" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/ConnectionToHSQLDB1.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/Main.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/MyUI.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/resources/dataDB/mydb.properties" charset="windows-1251" />

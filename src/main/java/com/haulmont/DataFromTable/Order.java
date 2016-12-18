@@ -1,7 +1,6 @@
 package com.haulmont.DataFromTable;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 public class Order implements DataTable{
     private int orderId;
@@ -12,12 +11,21 @@ public class Order implements DataTable{
     private double price;
     private String status;
 
-    private SimpleDateFormat sdf;
+//    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
     public Order(int orderId, Client client, Date createDate) {
         this.orderId = orderId;
         this.client = client;
         this.createDate = createDate;
+    }
+
+    public Order(String aboutOrder, Client client, Date createDate, Date endDate, double price, String status) {
+        this.aboutOrder = aboutOrder;
+        this.client = client;
+        this.createDate = createDate;
+        this.endDate = endDate;
+        this.price = price;
+        this.status = status;
     }
 
     public String getAboutOrder() {

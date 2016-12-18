@@ -11,6 +11,13 @@ public class Client implements DataTable{
         this.id = id;
     }
 
+    public Client(String firstName, String surName, String middleName, String telephon) {
+        this.firstName = firstName;
+        this.surName = surName;
+        this.middleName = middleName;
+        this.telephon = telephon;
+    }
+
     public Client(Object[] objects) {
         this.id = (int)objects[0];
         this.firstName = (String) objects[1];
