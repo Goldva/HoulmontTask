@@ -2,6 +2,10 @@ package com.haulmont;
 
 import com.haulmont.DataFromTable.Client;
 import com.haulmont.DataFromTable.Order;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,12 +13,12 @@ import java.util.List;
 
 public class ConnectionToHSQLDB {
     private Connection conn;
+    private JDBCConnectionPool pool;
 
     public ConnectionToHSQLDB() throws ClassNotFoundException, SQLException {
         loadDriver();
         getConnection();
         createTable();
-
     }
 
     private void loadDriver() throws ClassNotFoundException {
@@ -29,12 +33,13 @@ public class ConnectionToHSQLDB {
 
     private void getConnection() throws SQLException {
         try {
-            String path = "G:/java/houlmont/HoulmontTask/src/main/resources/dataDB/";
+            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
             String dbname = "mydb";
             String connectionString = "jdbc:hsqldb:file:" + path + dbname;
             String login = "joe";
             String password = "password";
             conn = DriverManager.getConnection(connectionString, login, password);
+            pool = new SimpleJDBCConnectionPool("org.hsqldb.jdbcDriver", connectionString + "/my", login, password);
         } catch (SQLException e) {
             System.out.println("Соединение не создано");
             e.printStackTrace();
@@ -61,6 +66,8 @@ public class ConnectionToHSQLDB {
             sql = "ALTER TABLE orders ADD FOREIGN KEY (clients_id) REFERENCES customers(clients_id)";
             statement.executeUpdate(sql);
 
+            TableQuery tb = new TableQuery("aaaaa", pool);
+            tb.setVersionColumn("cxcxv");
         } catch (SQLException ignored) {
         }
     }
@@ -73,7 +80,7 @@ public class ConnectionToHSQLDB {
             statement.setString(1, client.getFirstName());
             statement.setString(2, client.getSurName());
             statement.setString(3, client.getMiddleName());
-            statement.setString(4, client.getTelephon());
+            statement.setString(4, client.getTelephone());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,7 +93,7 @@ public class ConnectionToHSQLDB {
                             "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) " +
                                     "VALUES (?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, order.getAboutOrder());
-            statement.setInt(2, order.getClient().getId());
+            statement.setInt(2, order.getClient().getClientId());
             statement.setDate(3, order.getCreateDate());
             statement.setDate(4, order.getEndDate());
             statement.setDouble(5, order.getPrice());
@@ -98,7 +105,7 @@ public class ConnectionToHSQLDB {
     }
 
 
-    public void deleteTable(String tableName, int id) {
+    public void deleteRowFromTable(String tableName, int id) {
         try(Statement statement = conn.createStatement()) {
             String sql = String.format("DELETE FROM %s WHERE clients_id = %d", tableName, id);        //TODO: Нельзя удалить клиента если есть заказ
             statement.executeUpdate(sql);
@@ -117,10 +124,10 @@ public class ConnectionToHSQLDB {
 
             while (resultSet.next()) {
                 Client client = new Client(resultSet.getInt("clients_id"));
-                client.setFirstName(resultSet.getNString("firstname"));
-                client.setSurName(resultSet.getNString("surname"));
-                client.setMiddleName(resultSet.getNString("middlename"));
-                client.setTelephon(resultSet.getNString("tel"));
+                client.setFirstName(resultSet.getString("firstname"));
+                client.setSurName(resultSet.getString("surname"));
+                client.setMiddleName(resultSet.getString("middlename"));
+                client.setTelephone(resultSet.getString("tel"));
 
                 clients.add(client);
             }
@@ -143,7 +150,7 @@ public class ConnectionToHSQLDB {
                 client.setFirstName(resultSet.getNString("firstname"));
                 client.setSurName(resultSet.getNString("surname"));
                 client.setMiddleName(resultSet.getNString("middlename"));
-                client.setTelephon(resultSet.getNString("tel"));
+                client.setTelephone(resultSet.getNString("tel"));
 
 
                 Order order  = new Order(resultSet.getInt("orders_id"), client, resultSet.getDate("create_date"));
@@ -170,4 +177,7 @@ public class ConnectionToHSQLDB {
         }
     }
 
+    public JDBCConnectionPool getPool() {
+        return pool;
+    }
 }

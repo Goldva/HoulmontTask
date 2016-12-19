@@ -25,7 +25,7 @@
 //////        conn.addRowsToTable("testTable", "eeee");
 //////        conn.addRowsToTable("testTable", "ffff");
 //////        conn.addRowsToTable("testTable", "gggg");
-//////        conn.deleteTable("testTable", "19");
+//////        conn.deleteRowFromTable("testTable", "19");
 ////        List<Client> list = conn.getTableClients();
 //////        conn.printTable("orders");
 ////        conn.closeConnection();

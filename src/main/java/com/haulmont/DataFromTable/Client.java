@@ -1,33 +1,36 @@
 package com.haulmont.DataFromTable;
 
 public class Client implements DataTable{
-    private int id;
+    private int clientId;
     private String firstName;
     private String surName;
     private String middleName;
-    private String telephon;
+    private String telephone;
 
     public Client(int id) {
-        this.id = id;
+        this.clientId = id;
     }
 
-    public Client(String firstName, String surName, String middleName, String telephon) {
+    public Client() {
+    }
+
+    public Client(String firstName, String surName, String middleName, String telephone) {
         this.firstName = firstName;
         this.surName = surName;
         this.middleName = middleName;
-        this.telephon = telephon;
+        this.telephone = telephone;
     }
 
     public Client(Object[] objects) {
-        this.id = (int)objects[0];
+        this.clientId = (int)objects[0];
         this.firstName = (String) objects[1];
         this.surName = (String) objects[2];
         this.middleName = (String) objects[3];
-        this.telephon = (String) objects[4];
+        this.telephone = (String) objects[4];
     }
 
-    public int getId() {
-        return id;
+    public int getClientId() {
+        return clientId;
     }
 
     public String getFirstName() {
@@ -54,16 +57,16 @@ public class Client implements DataTable{
         this.middleName = middleName;
     }
 
-    public String getTelephon() {
-        return telephon;
+    public String getTelephone() {
+        return telephone;
     }
 
-    public void setTelephon(String telephon) {
-        this.telephon = telephon;
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 
     @Override
     public Object[] getAsArrayObjects(){
-        return new Object[]{id, firstName, surName, middleName, telephon};
+        return new Object[]{clientId, firstName, surName, middleName, telephone};
     }
 }

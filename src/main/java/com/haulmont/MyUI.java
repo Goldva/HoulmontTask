@@ -1,119 +1,102 @@
 package com.haulmont;
 
+import com.haulmont.DataFromTable.Client;
+import com.haulmont.DataFromTable.Order;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
 
 import javax.servlet.annotation.WebServlet;
-import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Collection;
 
 
 @Theme("mytheme")
 public class MyUI extends UI {
     private GridLayout gridLayout;
-    private Container containerClients;
-    private Container containerOrders;
-    private DataProcessing dataProc;
-
+    private BeanItemContainer<Client> containerClients;
+    private BeanItemContainer<Order> containerOrders;
+    private ConnectionToHSQLDB connection = new ConnectionToHSQLDB();
+    private Grid clientsGrid;
 
     public MyUI() throws SQLException, ClassNotFoundException {
         gridLayout = new GridLayout(4, 4);
         gridLayout.addStyleName("example-gridlayout");
-        containerClients = new IndexedContainer();
-        containerOrders = new IndexedContainer();
-        dataProc = new DataProcessing(containerClients, containerOrders);
+//        dataProc = new DataProcessing(containerClients, containerOrders);
     }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-//        UI.getCurrent().setPollInterval(1000);
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
         setContent(gridLayout);
 
-        Table tableClients = createClientsTable();
-        Table tableOrders = createOrdersTable();
+        Grid clientsGrid = createClientsTable();
+        Grid ordersGrid = createOrdersTable();
 
         Button addClientButton = new Button("Добавить");
-        addClientButton.addClickListener(clickEvent -> dataProc.addClient());
+        addClientButton.addClickListener(clickEvent -> new ClientCardUI(this).addClient());
+
         Button updateClientButton = new Button("Редактировать");
-        updateClientButton.addClickListener(clickEvent -> dataProc.updateClient());
-        Button deleteClientButton = new Button("Удалить");
-        deleteClientButton.addClickListener(clickEvent -> {
-            Item text = tableClients.getItem(tableClients.getValue());
-            dataProc.deleteClient(text);
+        updateClientButton.addClickListener(clickEvent -> new ClientCardUI(this).editorClient());
+
+        Button deleteClientButton = new Button("Удалить", e -> {
+            for (Object itemId: clientsGrid.getSelectionModel().getSelectedRows()) {
+                int id = ((Client) itemId).getClientId();
+                connection.deleteRowFromTable("clients", id);
+                clientsGrid.getContainerDataSource().removeItem(itemId);
+            }
+            clientsGrid.getSelectionModel().reset();
         });
 
         gridLayout.addComponent(addClientButton, 0, 0);
         gridLayout.addComponent(updateClientButton, 1, 0);
         gridLayout.addComponent(deleteClientButton, 2, 0);
-
     }
 
 
-    private Table createClientsTable() {
-        containerClients.addContainerProperty("ID", Integer.class, null);
-        containerClients.addContainerProperty("First name", String.class, null);
-        containerClients.addContainerProperty("Surname", String.class, null);
-        containerClients.addContainerProperty("Middle name", String.class, null);
-        containerClients.addContainerProperty("Telephone", String.class, null);
+    private Grid createClientsTable() {
+        Collection<Client> clients = connection.getTableClients();
 
-        Table tableClients = new Table();
-        tableClients.setContainerDataSource(containerClients);
-        tableClients.setSelectable(true);
-        tableClients.setImmediate(true);
+        containerClients = new BeanItemContainer<>(Client.class, clients);
+        clientsGrid = new Grid(containerClients);
+        clientsGrid.removeColumn("asArrayObjects");
+        clientsGrid.setColumnOrder("clientId", "firstName", "surName", "middleName", "telephone");
 
-        tableClients.setWidth("750px");
-        tableClients.setHeight("229px");
-        tableClients.addValueChangeListener(event -> tableClients.getValue());
+        clientsGrid.setImmediate(true);
 
-        gridLayout.addComponent(tableClients, 0, 1, 3, 1);
-        dataProc.addDataToTableClients();
-        return tableClients;
-//        new Thread(() -> {
-//            while (true) {
-//                getSession().lock();
-//                tableClients.removeAllItems();
-//                getSession().unlock();
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (final InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
+        clientsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
+        clientsGrid.setWidth("750px");
+        clientsGrid.setHeight("229px");
+
+        gridLayout.addComponent(clientsGrid, 0, 1, 3, 1);
+        return clientsGrid;
     }
 
-    private Table createOrdersTable() {
-        containerOrders.addContainerProperty("ID", Integer.class, null);
-        containerOrders.addContainerProperty("About order", String.class, null);
-        containerOrders.addContainerProperty("First name", String.class, null);
-        containerOrders.addContainerProperty("Surname", String.class, null);
-        containerOrders.addContainerProperty("Telephone", String.class, null);
-        containerOrders.addContainerProperty("Create date", Date.class, null);
-        containerOrders.addContainerProperty("End date", Date.class, null);
-        containerOrders.addContainerProperty("Price", Double.class, null);
-        containerOrders.addContainerProperty("Status", String.class, null);
+    private Grid createOrdersTable() {
+        Collection<Order> orders = connection.getTableOrders();
 
-        Table tableOrders = new Table();
-        tableOrders.setContainerDataSource(containerOrders);
-        tableOrders.setSelectable(true);
-        tableOrders.setImmediate(true);
+        containerOrders = new BeanItemContainer<>(Order.class, orders);
 
+        Grid ordersGrid = new Grid(containerOrders);
+        ordersGrid.removeColumn("client");
+        ordersGrid.removeColumn("clientId");
+        ordersGrid.removeColumn("middleName");
+        ordersGrid.removeColumn("asArrayObjects");
+        ordersGrid.setColumnOrder("orderId", "aboutOrder", "firstName", "surName", "telephone",
+                "createDate", "endDate", "price", "status");
 
-        tableOrders.setHeight("229px");
-        gridLayout.addComponent(tableOrders, 0, 3, 3, 3);
-        dataProc.addDataToTableOrders();
-        return tableOrders;
+        ordersGrid.setImmediate(true);
+
+        ordersGrid.setWidth("1050px");
+        ordersGrid.setHeight("229px");
+
+        gridLayout.addComponent(ordersGrid, 0, 3, 3, 3);
+        return ordersGrid;
     }
 
 

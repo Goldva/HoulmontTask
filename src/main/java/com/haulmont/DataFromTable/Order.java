@@ -68,13 +68,33 @@ public class Order implements DataTable{
         return client;
     }
 
+    public int getClientId() {
+        return client.getClientId();
+    }
+
+    public String getFirstName() {
+        return client.getFirstName();
+    }
+
+    public String getSurName() {
+        return client.getSurName();
+    }
+
+    public String getMiddleName() {
+        return client.getMiddleName();
+    }
+
+    public String getTelephone() {
+        return client.getTelephone();
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
 
     @Override
     public Object[] getAsArrayObjects(){
-        return new Object[]{orderId, aboutOrder, client.getFirstName(), client.getSurName(), client.getTelephon(),
+        return new Object[]{orderId, aboutOrder, client.getFirstName(), client.getSurName(), client.getTelephone(),
                 createDate, endDate, price, status};
     }
 
