@@ -1,13 +1,13 @@
 //package com.haulmont;
 //
-//import com.haulmont.DataFromTable.Client;
-//import com.haulmont.DataFromTable.Order;
+//import com.haulmont.datarows.Client;
+//import com.haulmont.datarows.Order;
 //
 //import java.sql.Date;
 //import java.sql.SQLException;
-//import java.util.Calendar;
-//import java.util.GregorianCalendar;
-//import java.util.List;
+//import java.utils.Calendar;
+//import java.utils.GregorianCalendar;
+//import java.utils.List;
 //
 //public class Main {
 //    public static void main(String[] args) throws SQLException, ClassNotFoundException {

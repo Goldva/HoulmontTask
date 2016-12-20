@@ -1,4 +1,4 @@
-package com.haulmont.DataFromTable;
+package com.haulmont.datarows;
 
 import java.sql.Date;
 

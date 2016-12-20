@@ -1,13 +1,10 @@
-package com.haulmont;
+package com.haulmont.forms;
 
-import com.haulmont.DataFromTable.Client;
-import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.haulmont.datarows.Client;
+import com.haulmont.utils.MyContainer;
 import com.vaadin.ui.*;
 
-/**
- * Created by ermakov on 19.12.2016.
- */
-public class ClientCardUI {
+public class ClientCard {
     private UI myUI;
     private TextField firstNameField;
     private TextField surNameField;
@@ -16,7 +13,7 @@ public class ClientCardUI {
     private Button okButton;
     private Button cancelButton;
 
-    public ClientCardUI(UI myUI) {
+    public ClientCard(UI myUI) {
         this.myUI = myUI;
         this.firstNameField = new TextField("First Name");
         this.surNameField = new TextField("Surname");
@@ -26,22 +23,33 @@ public class ClientCardUI {
         this.cancelButton = new Button("Cancel");
     }
 
-    public void addClient(){
+    public void addClient(MyContainer container){
         Window subWindow = createWindow();
-        myUI.addWindow(subWindow);
-        final Client client = new Client();
+        okButton.addClickListener(e -> {
+            Client client = new Client();
+            client.setFirstName(firstNameField.getValue());
+            client.setSurName(surNameField.getValue());
+            client.setMiddleName(middleNameField.getValue());
+            client.setTelephone(telephoneField.getValue());
+            container.addClient(client);
+            subWindow.close();
+        });
+    }
+
+    public void editorClient(MyContainer container, Client client){
+        Window subWindow = createWindow();
+        firstNameField.setValue(client.getFirstName());
+        surNameField.setValue(client.getSurName());
+        middleNameField.setValue(client.getMiddleName());
+        telephoneField.setValue(client.getTelephone());
         okButton.addClickListener(e -> {
             client.setFirstName(firstNameField.getValue());
             client.setSurName(surNameField.getValue());
             client.setMiddleName(middleNameField.getValue());
             client.setTelephone(telephoneField.getValue());
+            container.updateClient(client);
             subWindow.close();
         });
-    }
-
-    public void editorClient(){
-        myUI.addWindow(createWindow());
-
     }
 
     private Window createWindow(){
@@ -66,6 +74,7 @@ public class ClientCardUI {
         horizontalLayout.addComponent(cancelButton);
 
         subWindow.center();
+        myUI.addWindow(subWindow);
         return subWindow;
     }
 

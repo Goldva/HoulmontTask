@@ -1,4 +1,4 @@
-package com.haulmont.DataFromTable;
+package com.haulmont.datarows;
 
 public class Client implements DataTable{
     private int clientId;
