@@ -1,5 +1,6 @@
 package com.haulmont.forms;
 
+import com.haulmont.datarows.Order;
 import com.haulmont.utils.MyContainer;
 import com.vaadin.ui.*;
 
@@ -23,12 +24,12 @@ public class OrdersForm {
         Grid ordersGrid = createOrdersTable();
 
         Button addOrderButton = new Button("Добавить");
-        addOrderButton.addClickListener(clickEvent -> new OrderCard(ordersPanel.getUI()));
+        addOrderButton.addClickListener(clickEvent -> new OrderCard(ordersPanel.getUI()).addOrder(container));
 
         Button updateOrderButton = new Button("Редактировать");
         updateOrderButton.addClickListener(clickEvent -> {
-//            Order client = (Order) ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
-//            new ClientCard(this).editorClient(container, client);
+            Order order = (Order) ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
+            new OrderCard(ordersPanel.getUI()).editorOrder(container, order);
         });
         updateOrderButton.setEnabled(false);
 
@@ -65,10 +66,10 @@ public class OrdersForm {
     private Grid createOrdersTable() {
         Grid ordersGrid = new Grid(container.getContainerOrders());
         ordersGrid.removeColumn("client");
-        ordersGrid.removeColumn("clientId");
-        ordersGrid.removeColumn("middleName");
         ordersGrid.removeColumn("asArrayObjects");
-        ordersGrid.setColumnOrder("orderId", "aboutOrder", "firstName", "surName", "telephone",
+        ordersGrid.removeColumn("millisecondCreateDate");
+        ordersGrid.removeColumn("millisecondEndDate");
+        ordersGrid.setColumnOrder("orderId", "aboutOrder", "clientName", "telephone",
                 "createDate", "endDate", "price", "status");
 
         ordersGrid.setSelectionMode(Grid.SelectionMode.MULTI);

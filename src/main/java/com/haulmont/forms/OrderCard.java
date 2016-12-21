@@ -1,18 +1,18 @@
 package com.haulmont.forms;
 
-import com.vaadin.data.Validator;
+import com.haulmont.datarows.Client;
+import com.haulmont.datarows.Order;
+import com.haulmont.utils.MyContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.*;
 import com.vaadin.ui.*;
 
-import java.sql.Date;
 import java.util.*;
-import java.util.Calendar;
 
 public class OrderCard {
     private UI myUI;
     private TextArea aboutOrderField;
-
+    private ComboBox clientsBox;
     private DateField createDate;
     private DateField endDate;
     private TextField price;
@@ -24,45 +24,58 @@ public class OrderCard {
     public OrderCard(UI myUI) {
         this.myUI = myUI;
         this.aboutOrderField = new TextArea("About order");
+        this.clientsBox = new ComboBox("Clients");
         this.createDate = new DateField("Date create order", new ObjectProperty(new GregorianCalendar().getTime()));
         this.endDate = new DateField("Date end order");
-        this.price = new TextField("Price", new ObjectProperty<>(0));
+        this.price = new TextField("Price", new ObjectProperty<>(0.0));
         this.status = new ComboBox("Status");
         this.okButton = new Button("OK");
         this.cancelButton = new Button("Cancel");
-        createWindow();
     }
 
-//    public void addClient(MyContainer container){
-//        Window subWindow = createWindow();
-//        okButton.addClickListener(e -> {
-//            Client client = new Client();
-//            client.setFirstName(firstNameField.getValue());
-//            client.setSurName(surNameField.getValue());
-//            client.setMiddleName(middleNameField.getValue());
-//            client.setTelephone(telephoneField.getValue());
-//            container.addClient(client);
-//            subWindow.close();
-//        });
-//    }
-//
-//    public void editorClient(MyContainer container, Client client){
-//        Window subWindow = createWindow();
-//        firstNameField.setValue(client.getFirstName());
-//        surNameField.setValue(client.getSurName());
-//        middleNameField.setValue(client.getMiddleName());
-//        telephoneField.setValue(client.getTelephone());
-//        okButton.addClickListener(e -> {
+    public void addOrder(MyContainer container){
+        Collection<Client> clientsList = container.getListClients();
+        Window subWindow = createWindow(clientsList);
+        okButton.addClickListener(e -> {
+            Client client = null;
+            for (Client nextClient : clientsList) {
+                String selectClientName =  clientsBox.getValue().toString();
+                if (selectClientName.equals(nextClient.toString()))
+                    client = nextClient;
+            }
+
+            Order newOrder = new Order(client, createDate.getValue());
+            newOrder.setAboutOrder(aboutOrderField.getValue());
+            newOrder.setEndDate(endDate.getValue());
+            newOrder.setPrice(Double.parseDouble(price.getValue()));
+            newOrder.setStatus(status.getValue().toString());
+
+            container.addOrder(newOrder);
+            subWindow.close();
+        });
+    }
+
+    public void editorOrder(MyContainer container, Order order){
+        clientsBox.setEnabled(false);
+        Collection<Client> clientsList = container.getListClients();
+        Window subWindow = createWindow(clientsList);
+        aboutOrderField.setValue(order.getAboutOrder());
+        clientsBox.select(order.getClient());
+        createDate.setValue(new Date(order.getMillisecondCreateDate()));
+        endDate.setValue(new Date(order.getMillisecondEndDate()));
+        price.setValue(String.valueOf(order.getPrice()).replaceAll("\\.", ","));
+//        status.selectselect(1);
+        okButton.addClickListener(e -> {
 //            client.setFirstName(firstNameField.getValue());
 //            client.setSurName(surNameField.getValue());
 //            client.setMiddleName(middleNameField.getValue());
 //            client.setTelephone(telephoneField.getValue());
 //            container.updateClient(client);
-//            subWindow.close();
-//        });
-//    }
+            subWindow.close();
+        });
+    }
 
-    private Window createWindow(){
+    private Window createWindow(Collection<Client> clientsList){
         Window subWindow = new Window("Order card");
         FormLayout formLayout = new FormLayout();
         formLayout.setSpacing(true);
@@ -70,23 +83,32 @@ public class OrderCard {
         subWindow.setContent(formLayout);
         subWindow.setWidth("350px");
 
-        price.addValidator(new IntegerRangeValidator("Enter the numbers", 0, Integer.MAX_VALUE));
-        createDate.addValidator(new AbstractValidator<Date>("aaaaa") {
-            @Override
-            protected boolean isValidValue(Date date) {
-                Calendar s = new GregorianCalendar();
-                s.add(Calendar.DAY_OF_YEAR, -1);
-                boolean a = s.after(date);
-                return a;
-            }
+        clientsBox.addValidator(new NullValidator("Field should not be empty", false));
+        price.addValidator(new DoubleRangeValidator("Enter the numbers", 0.0, Double.MAX_VALUE));
+        status.addValidator(new NullValidator("Field should not be empty", false));
 
-            @Override
-            public Class<Date> getType() {
-                return Date.class;
-            }
-        });
+//        createDate.addValidator(new AbstractValidator<Date>("aaaaa") {
+//            @Override
+//            protected boolean isValidValue(Date date) {
+//                Calendar s = new GregorianCalendar();
+//                s.add(Calendar.DAY_OF_YEAR, -1);
+//                boolean a = s.after(date);
+//                return a;
+//            }
+//
+//            @Override
+//            public Class<Date> getType() {
+//                return Date.class;
+//            }
+//        });
+
+
+        clientsBox.addItems(clientsList);
+        clientsBox.setItemCaptionMode(AbstractSelect.ItemCaptionMode.ID);
+        status.addItems(new String[]{"Запланирован", "Выполнен", "Принят клиентом"});
 
         formLayout.addComponent(aboutOrderField);
+        formLayout.addComponent(clientsBox);
         formLayout.addComponent(createDate);
         formLayout.addComponent(endDate);
         formLayout.addComponent(price);

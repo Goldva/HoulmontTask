@@ -103,8 +103,8 @@ public class ConnectionToHSQLDB {
                                     "VALUES (?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, order.getAboutOrder());
             statement.setInt(2, order.getClient().getClientId());
-            statement.setDate(3, order.getCreateDate());
-            statement.setDate(4, order.getEndDate());
+            statement.setDate(3, new Date(order.getMillisecondCreateDate()));
+            statement.setDate(4, new Date(order.getMillisecondEndDate()));
             statement.setDouble(5, order.getPrice());
             statement.setString(6, order.getStatus());
             statement.executeUpdate();

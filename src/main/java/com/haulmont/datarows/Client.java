@@ -69,4 +69,9 @@ public class Client implements DataTable{
     public Object[] getAsArrayObjects(){
         return new Object[]{clientId, firstName, surName, middleName, telephone};
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d - %s %s %s",getClientId(), getSurName(), getFirstName(), getMiddleName());
+    }
 }

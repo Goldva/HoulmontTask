@@ -1,6 +1,8 @@
 package com.haulmont.datarows;
 
-import java.sql.Date;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Order implements DataTable{
     private int orderId;
@@ -11,7 +13,13 @@ public class Order implements DataTable{
     private double price;
     private String status;
 
-//    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+
+
+    public Order(Client client, Date createDate) {
+        this.client = client;
+        this.createDate = createDate;
+    }
 
     public Order(int orderId, Client client, Date createDate) {
         this.orderId = orderId;
@@ -28,6 +36,10 @@ public class Order implements DataTable{
         this.status = status;
     }
 
+    public int getOrderId() {
+        return orderId;
+    }
+
     public String getAboutOrder() {
         return aboutOrder;
     }
@@ -36,8 +48,32 @@ public class Order implements DataTable{
         this.aboutOrder = aboutOrder;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Client getClient() {
+        return client;
+    }
+
+    public String getClientName(){
+        return client.toString();
+    }
+
+    public String getTelephone() {
+        return client.getTelephone();
+    }
+
+    public String getCreateDate() {
+        return sdf.format(createDate);
+    }
+
+    public long getMillisecondCreateDate() {
+        return createDate.getTime();
+    }
+
+    public String getEndDate() {
+        return sdf.format(endDate);
+    }
+
+    public long getMillisecondEndDate() {
+        return endDate.getTime();
     }
 
     public void setEndDate(Date endDate) {
@@ -58,38 +94,6 @@ public class Order implements DataTable{
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public int getClientId() {
-        return client.getClientId();
-    }
-
-    public String getFirstName() {
-        return client.getFirstName();
-    }
-
-    public String getSurName() {
-        return client.getSurName();
-    }
-
-    public String getMiddleName() {
-        return client.getMiddleName();
-    }
-
-    public String getTelephone() {
-        return client.getTelephone();
-    }
-
-    public Date getCreateDate() {
-        return createDate;
     }
 
     @Override

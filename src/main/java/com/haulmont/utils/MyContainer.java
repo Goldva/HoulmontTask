@@ -36,6 +36,12 @@ public class MyContainer {
         }
     }
 
+    public void addOrder(Order order){
+        connection.addRowsToTable(order);
+        containerOrders.removeAllItems();
+        containerOrders.addAll(connection.getTableOrders());
+    }
+
     public void deleteOrders(Collection<Object> deleteRows){
         for (Object itemId: deleteRows) {
             int id = ((Order) itemId).getOrderId();
@@ -52,4 +58,7 @@ public class MyContainer {
     public BeanItemContainer<Order> getContainerOrders() {
         return containerOrders;
     }
+
+    public Collection<Client> getListClients(){
+        return connection.getTableClients();}
 }
