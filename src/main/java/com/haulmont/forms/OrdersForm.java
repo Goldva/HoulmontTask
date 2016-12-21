@@ -6,7 +6,7 @@ import com.vaadin.ui.*;
 
 public class OrdersForm {
     private Panel ordersPanel;
-    private MyContainer container;
+    private MyContainer container;                              //TODO: Delete
 
     public OrdersForm(Panel ordersPanel, MyContainer container) {
         this.ordersPanel = ordersPanel;

@@ -23,7 +23,7 @@ public class ClientCard {
         this.cancelButton = new Button("Cancel");
     }
 
-    public void addClient(MyContainer container){
+    public void addClient(MyContainer container){                              //TODO: Delete Container
         Window subWindow = createWindow();
         okButton.addClickListener(e -> {
             Client client = new Client();
@@ -36,7 +36,7 @@ public class ClientCard {
         });
     }
 
-    public void editorClient(MyContainer container, Client client){
+    public void editorClient(MyContainer container, Client client){                              //TODO: Delete Container
         Window subWindow = createWindow();
         firstNameField.setValue(client.getFirstName());
         surNameField.setValue(client.getSurName());

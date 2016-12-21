@@ -33,7 +33,7 @@ public class OrderCard {
         this.cancelButton = new Button("Cancel");
     }
 
-    public void addOrder(MyContainer container){
+    public void addOrder(MyContainer container){                              //TODO: Delete Container
         Collection<Client> clientsList = container.getListClients();
         Window subWindow = createWindow(clientsList);
         okButton.addClickListener(e -> {
@@ -55,7 +55,7 @@ public class OrderCard {
         });
     }
 
-    public void editorOrder(MyContainer container, Order order){
+    public void editorOrder(MyContainer container, Order order){                              //TODO: Delete Container
         clientsBox.setEnabled(false);
         Collection<Client> clientsList = container.getListClients();
         Window subWindow = createWindow(clientsList);
@@ -75,7 +75,7 @@ public class OrderCard {
         });
     }
 
-    private Window createWindow(Collection<Client> clientsList){
+    private Window createWindow(Collection<Client> clientsList){                              //TODO: May be delete list
         Window subWindow = new Window("Order card");
         FormLayout formLayout = new FormLayout();
         formLayout.setSpacing(true);

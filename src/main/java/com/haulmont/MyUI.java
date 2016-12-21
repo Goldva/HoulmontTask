@@ -17,8 +17,7 @@ import java.sql.SQLException;
 @Theme("mytheme")
 public class MyUI extends UI {
     private GridLayout gridLayout;
-    private MyContainer container;
-    private Grid clientsGrid;
+    private MyContainer container;                              //TODO: Delete
 
     public MyUI() throws SQLException, ClassNotFoundException {
         gridLayout = new GridLayout(4, 4);
