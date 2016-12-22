@@ -1,19 +1,22 @@
 package com.haulmont.forms;
 
-import com.haulmont.datarows.Client;
-import com.haulmont.utils.MyContainer;
-import com.vaadin.ui.*;
+import com.haulmont.utils.Controller;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
 
 public class ClientsForm {
     private Panel clientsPanel;
-    private MyContainer container;                              //TODO: Delete
+    private Controller controller;
 
-    public ClientsForm(Panel clientsPanel, MyContainer container) {
+    public ClientsForm(Panel clientsPanel) {
         this.clientsPanel = clientsPanel;
-        this.container = container;
+        controller = Controller.getInstance();
+        createForm();
     }
 
-    public void getClientForm() {
+    public void createForm() {
         GridLayout gridLayout = new GridLayout(4, 2);
         gridLayout.addStyleName("example-gridlayout");
         gridLayout.setMargin(true);
@@ -21,28 +24,19 @@ public class ClientsForm {
 
         clientsPanel.setContent(gridLayout);
 
-
         Grid clientsGrid = createClientsTable();
 
         Button addClientButton = new Button("Добавить");
-        addClientButton.addClickListener(clickEvent -> {
-            ClientCard cardUI = new ClientCard(clientsPanel.getUI());
-            cardUI.addClient(container);
-        });
-
         Button updateClientButton = new Button("Редактировать");
-        updateClientButton.addClickListener(clickEvent -> {
-            Client client = (Client) clientsGrid.getSelectionModel().getSelectedRows().iterator().next();
-            ClientCard cardUI = new ClientCard(clientsPanel.getUI());
-            cardUI.editorClient(container, client);
-        });
-        updateClientButton.setEnabled(false);
+        Button deleteClientButton = new Button("Удалить");
 
-        Button deleteClientButton = new Button("Удалить", e -> {
-            container.deleteClients(clientsGrid.getSelectionModel().getSelectedRows());
-            clientsGrid.getSelectionModel().reset();
+        addClientButton.addClickListener(clickEvent -> controller.createAddClientCard(clientsPanel.getUI()));
+        updateClientButton.addClickListener(clickEvent -> {
+            Object client = clientsGrid.getSelectionModel().getSelectedRows().iterator().next();
+            controller.createUpdateClientCard(clientsPanel.getUI(), client);
         });
-        deleteClientButton.setEnabled(false);
+        deleteClientButton.addClickListener(e ->
+                controller.deleteClients(clientsGrid.getSelectionModel().getSelectedRows()));
 
         clientsGrid.addSelectionListener(e -> {
             int countRowsSelect = clientsGrid.getSelectionModel().getSelectedRows().size();
@@ -58,6 +52,9 @@ public class ClientsForm {
             }
         });
 
+        updateClientButton.setEnabled(false);
+        deleteClientButton.setEnabled(false);
+
         gridLayout.setSizeFull();
         gridLayout.setColumnExpandRatio(3,2);
         gridLayout.addComponent(addClientButton, 0, 0);
@@ -68,7 +65,7 @@ public class ClientsForm {
 
 
     private Grid createClientsTable() {
-        Grid clientsGrid = new Grid(container.getContainerClients());
+        Grid clientsGrid = new Grid(controller.getContainerClients());
         clientsGrid.removeColumn("asArrayObjects");
         clientsGrid.setColumnOrder("clientId", "firstName", "surName", "middleName", "telephone");
 
@@ -80,4 +77,22 @@ public class ClientsForm {
         clientsGrid.setSizeFull();
         return clientsGrid;
     }
+
+//    private void setColumnFiltering(boolean filtered) {
+//        if (filtered && filteringHeader == null) {
+//            filteringHeader = sample.appendHeaderRow();
+//
+//            // Add new TextFields to each column which filters the data from
+//            // that column
+//            String columnId = ExampleUtil.BUDGET_ITEM_NAME_PROPERTY_ID
+//                    .toString();
+//            TextField filter = getColumnFilter(columnId);
+//            filteringHeader.getCell(columnId).setComponent(filter);
+//            filteringHeader.getCell(columnId).setStyleName("filter-header");
+//        } else if (!filtered && filteringHeader != null) {
+//            sample.removeHeaderRow(filteringHeader);
+//            filteringHeader = null;
+//        }
+//    }
+
 }

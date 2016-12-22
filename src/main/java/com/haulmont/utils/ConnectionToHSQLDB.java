@@ -113,10 +113,26 @@ public class ConnectionToHSQLDB {
         }
     }
 
+    public void updateTheTable(Order order) {
+        try (PreparedStatement statement =
+                     conn.prepareStatement(
+                             "UPDATE orders " +
+                                     "SET about_order = ?, end_date = ?, price = ?, status = ?" +
+                                     "WHERE id = ?")) {
+            statement.setString(1, order.getAboutOrder());
+            statement.setDate(2, new Date(order.getMillisecondEndDate()));
+            statement.setDouble(3, order.getPrice());
+            statement.setString(4, order.getStatus());
+            statement.setInt(5, order.getOrderId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void deleteRowFromTable(String tableName, int id) {
         try(Statement statement = conn.createStatement()) {
-            String sql = String.format("DELETE FROM %s WHERE id = %d", tableName, id);        //TODO: Нельзя удалить клиента если есть заказ
+            String sql = String.format("DELETE FROM %s WHERE id = %d", tableName, id);                                       //TODO: Нельзя удалить клиента если есть заказ
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,7 +160,7 @@ public class ConnectionToHSQLDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;                                            //TODO: Подумать над return
+        return null;                                                                                                        //TODO: Подумать над return
     }
 
     public List<Order> getTableOrders() {
@@ -174,7 +190,7 @@ public class ConnectionToHSQLDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;                                            //TODO: Подумать над return
+        return null;                                                                                                        //TODO: Подумать над return
     }
 
     public void closeConnection() {

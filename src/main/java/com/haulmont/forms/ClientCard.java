@@ -1,11 +1,18 @@
 package com.haulmont.forms;
 
 import com.haulmont.datarows.Client;
-import com.haulmont.utils.MyContainer;
+import com.haulmont.utils.Controller;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 
-public class ClientCard {
+import java.util.Arrays;
+import java.util.Collection;
+
+
+public class ClientCard implements Card {
     private UI myUI;
+    private Controller controller;
+    private Window subWindow;
     private TextField firstNameField;
     private TextField surNameField;
     private TextField middleNameField;
@@ -15,41 +22,22 @@ public class ClientCard {
 
     public ClientCard(UI myUI) {
         this.myUI = myUI;
+        this.controller = Controller.getInstance();
         this.firstNameField = new TextField("First Name");
         this.surNameField = new TextField("Surname");
         this.middleNameField = new TextField("Middle Name");
         this.telephoneField = new TextField("Telephone");
         this.okButton = new Button("OK");
         this.cancelButton = new Button("Cancel");
+        this.subWindow = createWindow();
     }
 
-    public void addClient(MyContainer container){                              //TODO: Delete Container
-        Window subWindow = createWindow();
-        okButton.addClickListener(e -> {
-            Client client = new Client();
-            client.setFirstName(firstNameField.getValue());
-            client.setSurName(surNameField.getValue());
-            client.setMiddleName(middleNameField.getValue());
-            client.setTelephone(telephoneField.getValue());
-            container.addClient(client);
-            subWindow.close();
-        });
+    public void addClient() {
+        okButton.addClickListener(e -> controller.addClient(this));
     }
 
-    public void editorClient(MyContainer container, Client client){                              //TODO: Delete Container
-        Window subWindow = createWindow();
-        firstNameField.setValue(client.getFirstName());
-        surNameField.setValue(client.getSurName());
-        middleNameField.setValue(client.getMiddleName());
-        telephoneField.setValue(client.getTelephone());
-        okButton.addClickListener(e -> {
-            client.setFirstName(firstNameField.getValue());
-            client.setSurName(surNameField.getValue());
-            client.setMiddleName(middleNameField.getValue());
-            client.setTelephone(telephoneField.getValue());
-            container.updateClient(client);
-            subWindow.close();
-        });
+    public void editorClient(Client client) {
+        okButton.addClickListener(e -> controller.updateClient(this, client));
     }
 
     private Window createWindow(){
@@ -60,22 +48,56 @@ public class ClientCard {
         subWindow.setContent(formLayout);
         subWindow.setWidth("350px");
 
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
+
+        firstNameField.addValidator(new StringLengthValidator("Minimal lenght about order 2 symbols", 2, null, true));
+        surNameField.addValidator(new StringLengthValidator("Minimal lenght about order 2 symbols", 2, null, true));
+        telephoneField.addValidator(new StringLengthValidator("Minimal lenght about order 2 symbols", 2, null, true));
+
+        formLayout.addAttachListener(attachEvent -> controller.buttonOkEnabled(this, okButton));
+        firstNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+        surNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+        telephoneField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+
+
         formLayout.addComponent(firstNameField);
         formLayout.addComponent(surNameField);
         formLayout.addComponent(middleNameField);
         formLayout.addComponent(telephoneField);
-
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setSpacing(true);
         formLayout.addComponent(horizontalLayout);
-
         horizontalLayout.addComponent(okButton);
-        cancelButton.addClickListener(e -> subWindow.close());
         horizontalLayout.addComponent(cancelButton);
+
+        cancelButton.addClickListener(e -> controller.closeCard(subWindow));
 
         subWindow.center();
         myUI.addWindow(subWindow);
         return subWindow;
     }
 
+    public Window getSubWindow() {
+        return subWindow;
+    }
+
+    public TextField getFirstNameField() {
+        return firstNameField;
+    }
+
+    public TextField getSurNameField() {
+        return surNameField;
+    }
+
+    public TextField getMiddleNameField() {
+        return middleNameField;
+    }
+
+    public TextField getTelephoneField() {
+        return telephoneField;
+    }
+
+    @Override
+    public Collection<AbstractComponent> getAllElements() {
+        return Arrays.asList(firstNameField, subWindow, middleNameField, telephoneField);
+    }
 }

@@ -42,6 +42,12 @@ public class MyContainer {
         containerOrders.addAll(connection.getTableOrders());
     }
 
+    public void updateOrder(Order order) {
+        connection.updateTheTable(order);
+        containerOrders.removeAllItems();
+        containerOrders.addAll(connection.getTableOrders());
+    }
+
     public void deleteOrders(Collection<Object> deleteRows){
         for (Object itemId: deleteRows) {
             int id = ((Order) itemId).getOrderId();

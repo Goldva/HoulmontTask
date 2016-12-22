@@ -74,4 +74,29 @@ public class Client implements DataTable{
     public String toString() {
         return String.format("%d - %s %s %s",getClientId(), getSurName(), getFirstName(), getMiddleName());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        if (clientId != client.clientId) return false;
+        if (!firstName.equals(client.firstName)) return false;
+        if (!surName.equals(client.surName)) return false;
+        if (middleName != null ? !middleName.equals(client.middleName) : client.middleName != null) return false;
+        return telephone.equals(client.telephone);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = clientId;
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + surName.hashCode();
+        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
+        result = 31 * result + telephone.hashCode();
+        return result;
+    }
 }

@@ -1,19 +1,22 @@
 package com.haulmont.forms;
 
-import com.haulmont.datarows.Order;
-import com.haulmont.utils.MyContainer;
-import com.vaadin.ui.*;
+import com.haulmont.utils.Controller;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
 
 public class OrdersForm {
     private Panel ordersPanel;
-    private MyContainer container;                              //TODO: Delete
+    Controller controller;
 
-    public OrdersForm(Panel ordersPanel, MyContainer container) {
+    public OrdersForm(Panel ordersPanel) {
         this.ordersPanel = ordersPanel;
-        this.container = container;
+        controller = Controller.getInstance();
+        createOrderForm();
     }
 
-    public void getOrderForm() {
+    public void createOrderForm() {
         GridLayout gridLayout = new GridLayout(4, 2);
         gridLayout.addStyleName("example-gridlayout");
         gridLayout.setMargin(true);
@@ -24,20 +27,18 @@ public class OrdersForm {
         Grid ordersGrid = createOrdersTable();
 
         Button addOrderButton = new Button("Добавить");
-        addOrderButton.addClickListener(clickEvent -> new OrderCard(ordersPanel.getUI()).addOrder(container));
-
         Button updateOrderButton = new Button("Редактировать");
-        updateOrderButton.addClickListener(clickEvent -> {
-            Order order = (Order) ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
-            new OrderCard(ordersPanel.getUI()).editorOrder(container, order);
-        });
-        updateOrderButton.setEnabled(false);
+        Button deleteOrderButton = new Button("Удалить");
 
-        Button deleteOrderButton = new Button("Удалить", e -> {
-            container.deleteOrders(ordersGrid.getSelectionModel().getSelectedRows());
-            ordersGrid.getSelectionModel().reset();
+        addOrderButton.addClickListener(clickEvent -> controller.createAddOrderCard(ordersPanel.getUI()));
+        updateOrderButton.addClickListener(clickEvent -> {
+            Object order = ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
+            controller.createUpdateOrderCard(ordersPanel.getUI(), order);
         });
-        deleteOrderButton.setEnabled(false);
+        deleteOrderButton.addClickListener(e ->
+                controller.deleteOrders(ordersGrid.getSelectionModel().getSelectedRows()));
+
+
 
         ordersGrid.addSelectionListener(e -> {
             int countRowsSelect = ordersGrid.getSelectionModel().getSelectedRows().size();
@@ -53,6 +54,8 @@ public class OrdersForm {
             }
         });
 
+        updateOrderButton.setEnabled(false);
+        deleteOrderButton.setEnabled(false);
 
         gridLayout.setSizeFull();
         gridLayout.setColumnExpandRatio(3,2);
@@ -64,7 +67,7 @@ public class OrdersForm {
 
 
     private Grid createOrdersTable() {
-        Grid ordersGrid = new Grid(container.getContainerOrders());
+        Grid ordersGrid = new Grid(controller.getContainerOrders());
         ordersGrid.removeColumn("client");
         ordersGrid.removeColumn("asArrayObjects");
         ordersGrid.removeColumn("millisecondCreateDate");

@@ -1,20 +1,161 @@
 package com.haulmont.utils;
 
+import com.haulmont.datarows.Client;
+import com.haulmont.datarows.Order;
+import com.haulmont.forms.Card;
+import com.haulmont.forms.ClientCard;
+import com.haulmont.forms.OrderCard;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 
 public class Controller {
     private MyContainer container;
 
     private static Controller instance = null;
 
-    public static Controller getInstance() throws SQLException, ClassNotFoundException {
+    public Controller() {
+        try {
+            container = new MyContainer(new ConnectionToHSQLDB());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Controller getInstance() {
         if (instance==null) {
             instance = new Controller();
         }
         return instance;
     }
 
-    public Controller() throws SQLException, ClassNotFoundException {
-        container = new MyContainer(new ConnectionToHSQLDB());
+    public void createAddClientCard(UI myUI) {
+        new ClientCard(myUI).addClient();
+    }
+
+    public void addClient(ClientCard card) {
+        Client client = new Client();
+        client.setFirstName(card.getFirstNameField().getValue());
+        client.setSurName(card.getSurNameField().getValue());
+        client.setMiddleName(card.getMiddleNameField().getValue());
+        client.setTelephone(card.getTelephoneField().getValue());
+        container.addClient(client);
+        closeCard(card.getSubWindow());
+    }
+
+    public void createUpdateClientCard(UI myUI, Object object) {
+        Client client = (Client) object;
+        ClientCard update = new ClientCard(myUI);
+        update.getFirstNameField().setValue(client.getFirstName());
+        update.getSurNameField().setValue(client.getSurName());
+        update.getMiddleNameField().setValue(client.getMiddleName());
+        update.getTelephoneField().setValue(client.getTelephone());
+        update.editorClient(client);
+    }
+
+    public void updateClient(ClientCard card, Client client) {
+        client.setFirstName(card.getFirstNameField().getValue());
+        client.setSurName(card.getSurNameField().getValue());
+        client.setMiddleName(card.getMiddleNameField().getValue());
+        client.setTelephone(card.getTelephoneField().getValue());
+        container.updateClient(client);
+        closeCard(card.getSubWindow());
+    }
+
+    public void deleteClients(Collection<Object> deleteClients) {
+        container.deleteClients(deleteClients);
+    }
+
+    public void createAddOrderCard(UI myUI) {
+        OrderCard card = new OrderCard(myUI);
+        card.getClientsBox().addItems(container.getListClients());
+        card.getStatus().addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
+        card.addOrder();
+    }
+
+    public void addOrder(OrderCard card) {
+        Collection<Client> clients = container.getListClients();
+        Client client = null;
+        String selectClientName = card.getClientsBox().getValue().toString();
+        for (Client nextClient : clients)
+            if (selectClientName.equals(nextClient.toString()))
+                client = nextClient;
+
+        Order newOrder = new Order(client, card.getCreateDate().getValue());
+        newOrder.setAboutOrder(card.getAboutOrderField().getValue());
+        newOrder.setEndDate(card.getEndDate().getValue());
+        String price = card.getPrice().getValue().replaceAll(",", "\\.");
+        newOrder.setPrice(Double.parseDouble(price));
+        newOrder.setStatus(card.getStatus().getValue().toString());
+
+        container.addOrder(newOrder);
+        closeCard(card.getSubWindow());
+    }
+
+    public void createUpdateOrderCard(UI myUI, Object object) {
+        Order order = (Order) object;
+        OrderCard card = new OrderCard(myUI);
+
+        card.getClientsBox().addItems(container.getListClients());
+        card.getStatus().addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
+
+        card.getAboutOrderField().setValue(order.getAboutOrder());
+        card.getClientsBox().setValue(order.getClient());
+        card.getCreateDate().setValue(new Date(order.getMillisecondCreateDate()));
+        card.getEndDate().setValue(new Date(order.getMillisecondEndDate()));
+        String price = String.valueOf(order.getPrice()).replaceAll("\\.", ",");
+        card.getPrice().setValue(price);
+        card.getStatus().setValue(order.getStatus());
+        card.getClientsBox().setEnabled(false);
+        card.editorOrder(order);
+    }
+
+    public void updateOrder(OrderCard card, Order order) {
+        order.setAboutOrder(card.getAboutOrderField().getValue());
+        order.setEndDate(card.getEndDate().getValue());
+        String price = card.getPrice().getValue().replaceAll(",", "\\.");
+        order.setPrice(Double.parseDouble(price));
+        order.setStatus(card.getStatus().getValue().toString());
+        container.updateOrder(order);
+        closeCard(card.getSubWindow());
+    }
+
+    public void deleteOrders(Collection<Object> deleteOrders) {
+        container.deleteOrders(deleteOrders);
+    }
+
+    public void buttonOkEnabled(Card card, Button button) {
+        for (AbstractComponent component : card.getAllElements()) {
+            if (component.getErrorMessage() != null) {
+                button.setEnabled(false);
+                break;
+            } else
+                button.setEnabled(true);
+        }
+    }
+
+    public void buttonOkEnabled(Button button, boolean enabled) {
+        button.setEnabled(enabled);
+    }
+
+    public void closeCard(Window window) {
+        window.close();
+    }
+
+    public BeanItemContainer<Client> getContainerClients() {
+        return container.getContainerClients();
+    }
+
+    public BeanItemContainer<Order> getContainerOrders() {
+        return container.getContainerOrders();
     }
 }

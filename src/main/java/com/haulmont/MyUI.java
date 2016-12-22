@@ -1,29 +1,21 @@
 package com.haulmont;
 
-import com.haulmont.utils.ConnectionToHSQLDB;
-import com.haulmont.utils.MyContainer;
 import com.haulmont.forms.ClientsForm;
 import com.haulmont.forms.OrdersForm;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.*;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 import javax.servlet.annotation.WebServlet;
-import java.sql.SQLException;
 
 
 @Theme("mytheme")
 public class MyUI extends UI {
-    private GridLayout gridLayout;
-    private MyContainer container;                              //TODO: Delete
-
-    public MyUI() throws SQLException, ClassNotFoundException {
-        gridLayout = new GridLayout(4, 4);
-        gridLayout.addStyleName("example-gridlayout");
-        container = new MyContainer(new ConnectionToHSQLDB());
-    }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -38,9 +30,7 @@ public class MyUI extends UI {
             MenuBar.MenuItem previous = null;
 
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                ClientsForm clientsForm = new ClientsForm(menuPanel, container);
-                clientsForm.getClientForm();
-
+                new ClientsForm(menuPanel);
                 if (previous != null)
                     previous.setStyleName(null);
                 selectedItem.setStyleName("highlight");
@@ -52,8 +42,7 @@ public class MyUI extends UI {
             MenuBar.MenuItem previous = null;
 
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                OrdersForm ordersForm = new OrdersForm(menuPanel, container);
-                ordersForm.getOrderForm();
+                new OrdersForm(menuPanel);
                 if (previous != null)
                     previous.setStyleName(null);
                 selectedItem.setStyleName("highlight");
