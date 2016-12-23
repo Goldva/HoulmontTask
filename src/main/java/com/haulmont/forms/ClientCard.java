@@ -3,6 +3,7 @@ package com.haulmont.forms;
 import com.haulmont.datarows.Client;
 import com.haulmont.utils.Controller;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 
 import java.util.Arrays;
@@ -33,11 +34,11 @@ public class ClientCard implements Card {
     }
 
     public void addClient() {
-        okButton.addClickListener(e -> controller.addClient(this));
+        okButton.addClickListener(e -> controller.addRowToTable(this));
     }
 
     public void editorClient(Client client) {
-        okButton.addClickListener(e -> controller.updateClient(this, client));
+        okButton.addClickListener(e -> controller.updateRowInTheTable(this, client));
     }
 
     private Window createWindow(){
@@ -59,7 +60,7 @@ public class ClientCard implements Card {
         firstNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         surNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         telephoneField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-
+        cancelButton.addClickListener(e -> controller.closeCard(subWindow));
 
         formLayout.addComponent(firstNameField);
         formLayout.addComponent(surNameField);
@@ -69,9 +70,8 @@ public class ClientCard implements Card {
         horizontalLayout.addComponent(okButton);
         horizontalLayout.addComponent(cancelButton);
 
-        cancelButton.addClickListener(e -> controller.closeCard(subWindow));
-
         subWindow.center();
+        subWindow.setModal(true);
         myUI.addWindow(subWindow);
         return subWindow;
     }

@@ -1,14 +1,17 @@
 package com.haulmont.forms;
 
 import com.haulmont.utils.Controller;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Panel;
+import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
+
+import java.util.List;
 
 public class ClientsForm {
     private Panel clientsPanel;
     private Controller controller;
+    private Grid clientsGrid;
 
     public ClientsForm(Panel clientsPanel) {
         this.clientsPanel = clientsPanel;
@@ -24,7 +27,8 @@ public class ClientsForm {
 
         clientsPanel.setContent(gridLayout);
 
-        Grid clientsGrid = createClientsTable();
+        createClientsTable();
+        setColumnFiltering();
 
         Button addClientButton = new Button("Добавить");
         Button updateClientButton = new Button("Редактировать");
@@ -34,9 +38,12 @@ public class ClientsForm {
         updateClientButton.addClickListener(clickEvent -> {
             Object client = clientsGrid.getSelectionModel().getSelectedRows().iterator().next();
             controller.createUpdateClientCard(clientsPanel.getUI(), client);
+            clientsGrid.deselectAll();
         });
-        deleteClientButton.addClickListener(e ->
-                controller.deleteClients(clientsGrid.getSelectionModel().getSelectedRows()));
+        deleteClientButton.addClickListener(e -> {
+            controller.deleteClients(clientsGrid.getSelectionModel().getSelectedRows());
+            clientsGrid.deselectAll();
+        });
 
         clientsGrid.addSelectionListener(e -> {
             int countRowsSelect = clientsGrid.getSelectionModel().getSelectedRows().size();
@@ -64,8 +71,8 @@ public class ClientsForm {
     }
 
 
-    private Grid createClientsTable() {
-        Grid clientsGrid = new Grid(controller.getContainerClients());
+    private void createClientsTable() {
+        clientsGrid = new Grid(controller.getContainerClients());
         clientsGrid.removeColumn("asArrayObjects");
         clientsGrid.setColumnOrder("clientId", "firstName", "surName", "middleName", "telephone");
 
@@ -75,24 +82,33 @@ public class ClientsForm {
         clientsGrid.getColumn("middleName").setExpandRatio(1);
         clientsGrid.getColumn("telephone").setExpandRatio(1);
         clientsGrid.setSizeFull();
-        return clientsGrid;
     }
 
-//    private void setColumnFiltering(boolean filtered) {
-//        if (filtered && filteringHeader == null) {
-//            filteringHeader = sample.appendHeaderRow();
-//
-//            // Add new TextFields to each column which filters the data from
-//            // that column
-//            String columnId = ExampleUtil.BUDGET_ITEM_NAME_PROPERTY_ID
-//                    .toString();
-//            TextField filter = getColumnFilter(columnId);
-//            filteringHeader.getCell(columnId).setComponent(filter);
-//            filteringHeader.getCell(columnId).setStyleName("filter-header");
-//        } else if (!filtered && filteringHeader != null) {
-//            sample.removeHeaderRow(filteringHeader);
-//            filteringHeader = null;
-//        }
-//    }
+    private void setColumnFiltering() {
+        Grid.HeaderRow filteringHeader = clientsGrid.appendHeaderRow();
+        List<Grid.Column> columns =clientsGrid.getColumns();
+        for (Grid.Column column : columns){
+            TextField filter = getColumnFilter(column.getPropertyId());
+            filteringHeader.getCell(column.getPropertyId()).setComponent(filter);
+            filteringHeader.getCell(column.getPropertyId()).setStyleName("filter-header");
+        }
+    }
+
+    private TextField getColumnFilter(final Object columnId) {
+        TextField filter = new TextField();
+        filter.setWidth("100%");
+        filter.addStyleName(ValoTheme.TEXTFIELD_TINY);
+        filter.setInputPrompt("Filter");
+
+        filter.addTextChangeListener(new FieldEvents.TextChangeListener() {
+            SimpleStringFilter filterText = null;
+
+            @Override
+            public void textChange(FieldEvents.TextChangeEvent textChangeEvent) {
+                filterText = controller.filter(clientsGrid, filterText, columnId, textChangeEvent);
+            }
+        });
+        return filter;
+    }
 
 }

@@ -41,11 +41,11 @@ public class OrderCard implements Card {
     }
 
     public void addOrder() {
-        okButton.addClickListener(e -> controller.addOrder(this));
+        okButton.addClickListener(e -> controller.addRowToTable(this));
     }
 
     public void editorOrder(Order order) {
-        okButton.addClickListener(e -> controller.updateOrder(this, order));
+        okButton.addClickListener(e -> controller.updateRowInTheTable(this, order));
     }
 
     private Window createWindow() {
@@ -55,6 +55,9 @@ public class OrderCard implements Card {
         formLayout.setMargin(true);
         subWindow.setContent(formLayout);
         subWindow.setWidth("350px");
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
 
         aboutOrderField.addValidator(
                 new StringLengthValidator("Minimal lenght about order 5 symbols", 5, null, true)
@@ -78,6 +81,7 @@ public class OrderCard implements Card {
         endDate.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         price.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         status.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+        cancelButton.addClickListener(e -> controller.closeCard(subWindow));
 
         formLayout.addComponent(aboutOrderField);
         formLayout.addComponent(clientsBox);
@@ -85,16 +89,12 @@ public class OrderCard implements Card {
         formLayout.addComponent(endDate);
         formLayout.addComponent(price);
         formLayout.addComponent(status);
-
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setSpacing(true);
         formLayout.addComponent(horizontalLayout);
-
         horizontalLayout.addComponent(okButton);
-        cancelButton.addClickListener(e -> controller.closeCard(subWindow));
         horizontalLayout.addComponent(cancelButton);
 
         subWindow.center();
+        subWindow.setModal(true);
         myUI.addWindow(subWindow);
         return subWindow;
     }

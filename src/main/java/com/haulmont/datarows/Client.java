@@ -21,14 +21,6 @@ public class Client implements DataTable{
         this.telephone = telephone;
     }
 
-    public Client(Object[] objects) {
-        this.clientId = (int)objects[0];
-        this.firstName = (String) objects[1];
-        this.surName = (String) objects[2];
-        this.middleName = (String) objects[3];
-        this.telephone = (String) objects[4];
-    }
-
     public int getClientId() {
         return clientId;
     }
@@ -72,7 +64,7 @@ public class Client implements DataTable{
 
     @Override
     public String toString() {
-        return String.format("%d - %s %s %s",getClientId(), getSurName(), getFirstName(), getMiddleName());
+        return String.format("%s %s %s", getSurName(), getFirstName(), getMiddleName());
     }
 
     @Override
