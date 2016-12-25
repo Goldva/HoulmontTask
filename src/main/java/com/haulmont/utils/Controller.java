@@ -56,7 +56,6 @@ public class Controller {
         client.setTelephone(card.getTelephoneField().getValue());
         container.addClient(client);
         closeCard(card.getSubWindow());
-
     }
 
     public void addRowToTable(OrderCard card) {

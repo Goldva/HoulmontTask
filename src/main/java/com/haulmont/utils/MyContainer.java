@@ -32,8 +32,8 @@ public class MyContainer {
     public void deleteClients(Collection<Object> deleteRows){
         for (Object itemId: deleteRows) {
             int id = ((Client) itemId).getClientId();
-            connection.deleteRowFromTable("clients", id);
-            containerClients.removeItem(itemId);
+            if(connection.deleteRowFromTable("clients", id))
+                containerClients.removeItem(itemId);
         }
     }
 
@@ -52,8 +52,8 @@ public class MyContainer {
     public void deleteOrders(Collection<Object> deleteRows){
         for (Object itemId: deleteRows) {
             int id = ((Order) itemId).getOrderId();
-            connection.deleteRowFromTable("orders", id);
-            containerOrders.removeItem(itemId);
+            if (connection.deleteRowFromTable("orders", id))
+                containerOrders.removeItem(itemId);
         }
     }
 

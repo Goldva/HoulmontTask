@@ -131,13 +131,16 @@ public class ConnectionToHSQLDB {
         }
     }
 
-    public void deleteRowFromTable(String tableName, int id) {
+    public boolean deleteRowFromTable(String tableName, int id) {
         try(Statement statement = conn.createStatement()) {
-            String sql = String.format("DELETE FROM %s WHERE id = %d", tableName, id);                                       //TODO: Ќельз€ удалить клиента если есть заказ
-            statement.executeUpdate(sql);
+            String sql = String.format("DELETE FROM %s WHERE id = %d AND id NOT IN (SELECT clients_id FROM orders)", tableName, id);                                       //TODO: Ќельз€ удалить клиента если есть заказ
+            int countDeletedRows = statement.executeUpdate(sql);
+            if (countDeletedRows != 0)
+                return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 
