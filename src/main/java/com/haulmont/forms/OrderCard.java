@@ -16,7 +16,7 @@ public class OrderCard implements Card {
     private Controller controller;
     private Window subWindow;
 
-    private TextArea aboutOrderField;
+    private TextArea aboutOrderArea;
     private ComboBox clientsBox;
     private DateField createDate;
     private DateField endDate;
@@ -29,9 +29,9 @@ public class OrderCard implements Card {
     public OrderCard(UI myUI) {
         this.myUI = myUI;
         this.controller = Controller.getInstance();
-        this.aboutOrderField = new TextArea("About order");
+        this.aboutOrderArea = new TextArea("About order");
         this.clientsBox = new ComboBox("Clients");
-        this.createDate = new DateField("Date create order", new ObjectProperty(new GregorianCalendar().getTime()));
+        this.createDate = new DateField("Date create order", new ObjectProperty<>(new GregorianCalendar().getTime()));
         this.endDate = new DateField("Date end order");
         this.price = new TextField("Price", new ObjectProperty<>(0.0));
         this.status = new ComboBox("Status");
@@ -59,7 +59,7 @@ public class OrderCard implements Card {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setSpacing(true);
 
-        aboutOrderField.addValidator(
+        aboutOrderArea.addValidator(
                 new StringLengthValidator("Minimal lenght about order 5 symbols", 5, null, true)
         );
         clientsBox.addValidator(new NullValidator("Field should not be empty", false));
@@ -75,7 +75,7 @@ public class OrderCard implements Card {
         status.addValidator(new NullValidator("Field should not be empty", false));
 
         formLayout.addAttachListener(attachEvent -> controller.buttonOkEnabled(this, okButton));
-        aboutOrderField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+        aboutOrderArea.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         clientsBox.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         createDate.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         endDate.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
@@ -83,7 +83,9 @@ public class OrderCard implements Card {
         status.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         cancelButton.addClickListener(e -> controller.closeCard(subWindow));
 
-        formLayout.addComponent(aboutOrderField);
+        status.addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
+
+        formLayout.addComponent(aboutOrderArea);
         formLayout.addComponent(clientsBox);
         formLayout.addComponent(createDate);
         formLayout.addComponent(endDate);
@@ -103,8 +105,8 @@ public class OrderCard implements Card {
         return subWindow;
     }
 
-    public TextArea getAboutOrderField() {
-        return aboutOrderField;
+    public TextArea getAboutOrderArea() {
+        return aboutOrderArea;
     }
 
     public ComboBox getClientsBox() {
@@ -129,6 +131,6 @@ public class OrderCard implements Card {
 
     @Override
     public Collection<AbstractComponent> getAllElements() {
-        return Arrays.asList(aboutOrderField, clientsBox, createDate, endDate, price, status);
+        return Arrays.asList(aboutOrderArea, clientsBox, createDate, endDate, price, status);
     }
 }

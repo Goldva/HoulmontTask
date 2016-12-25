@@ -9,13 +9,14 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Controller {
     private MyContainer container;
@@ -25,9 +26,7 @@ public class Controller {
     public Controller() {
         try {
             container = new MyContainer(new ConnectionToHSQLDB());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
@@ -41,19 +40,11 @@ public class Controller {
 
     public void createAddClientCard(UI myUI) {
         new ClientCard(myUI).addClient();
-
-//        new UI() {
-//            @Override
-//            protected void init(VaadinRequest vaadinRequest) {
-//            }
-//        };
-//        uiTable.close();
     }
 
     public void createAddOrderCard(UI myUI) {
         OrderCard card = new OrderCard(myUI);
         card.getClientsBox().addItems(container.getListClients());
-        card.getStatus().addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
         card.addOrder();
     }
 
@@ -77,7 +68,7 @@ public class Controller {
                 client = nextClient;
 
         Order newOrder = new Order(client, card.getCreateDate().getValue());
-        newOrder.setAboutOrder(card.getAboutOrderField().getValue());
+        newOrder.setAboutOrder(card.getAboutOrderArea().getValue());
         newOrder.setEndDate(card.getEndDate().getValue());
         String price = card.getPrice().getValue().replaceAll(",", "\\.");
         newOrder.setPrice(Double.parseDouble(price));
@@ -98,13 +89,11 @@ public class Controller {
     }
 
     public void createUpdateOrderCard(UI myUI, Object object) {
-        Order order = (Order) object;
         OrderCard card = new OrderCard(myUI);
-
         card.getClientsBox().addItems(container.getListClients());
-        card.getStatus().addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
 
-        card.getAboutOrderField().setValue(order.getAboutOrder());
+        Order order = (Order) object;
+        card.getAboutOrderArea().setValue(order.getAboutOrder());
         card.getClientsBox().setValue(order.getClient());
         card.getCreateDate().setValue(new Date(order.getMillisecondCreateDate()));
         card.getEndDate().setValue(new Date(order.getMillisecondEndDate()));
@@ -125,7 +114,7 @@ public class Controller {
     }
 
     public void updateRowInTheTable(OrderCard card, Order order) {
-        order.setAboutOrder(card.getAboutOrderField().getValue());
+        order.setAboutOrder(card.getAboutOrderArea().getValue());
         order.setEndDate(card.getEndDate().getValue());
         String price = card.getPrice().getValue().replaceAll(",", "\\.");
         order.setPrice(Double.parseDouble(price));
@@ -134,7 +123,7 @@ public class Controller {
         closeCard(card.getSubWindow());
     }
 
-    public SimpleStringFilter filter(Grid grid, SimpleStringFilter filterText, Object columnId, FieldEvents.TextChangeEvent textChangeEvent){
+    public SimpleStringFilter filterGrid(Grid grid, SimpleStringFilter filterText, Object columnId, FieldEvents.TextChangeEvent textChangeEvent){
         Container.Filterable filterable = (Container.Filterable) grid.getContainerDataSource();
         if (filterText != null)
             filterable.removeContainerFilter(filterText);
@@ -146,6 +135,33 @@ public class Controller {
         grid.cancelEditor();
 
         return filterText;
+    }
+
+    public void filtering(String aboutOrder, String clientName, String status){
+        Collection<Order> orders = container.getListOrders();
+        Collection<Order> result = new ArrayList<>();
+        result.addAll(orders);
+
+        for (Order order : orders){
+            if (!checkText(aboutOrder, order.getAboutOrder())) {
+                result.remove(order);
+                continue;
+            }
+            if (!checkText(clientName, order.getClientName())) {
+                result.remove(order);
+                continue;
+            }
+            if (!checkText(status, order.getStatus())) {
+                result.remove(order);
+            }
+        }
+        container.setFilteredCollectionOrders(result);
+    }
+
+    public boolean checkText(String regExp, String text){
+        Pattern pattern = Pattern.compile(".*" + regExp + ".*");
+        Matcher matcher = pattern.matcher(text);
+        return matcher.matches();
     }
 
     public void deleteClients(Collection<Object> deleteClients) {

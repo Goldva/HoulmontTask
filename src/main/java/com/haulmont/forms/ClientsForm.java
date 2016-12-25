@@ -90,7 +90,7 @@ public class ClientsForm {
         for (Grid.Column column : columns){
             TextField filter = getColumnFilter(column.getPropertyId());
             filteringHeader.getCell(column.getPropertyId()).setComponent(filter);
-            filteringHeader.getCell(column.getPropertyId()).setStyleName("filter-header");
+            filteringHeader.getCell(column.getPropertyId()).setStyleName("filterGrid-header");
         }
     }
 
@@ -105,7 +105,7 @@ public class ClientsForm {
 
             @Override
             public void textChange(FieldEvents.TextChangeEvent textChangeEvent) {
-                filterText = controller.filter(clientsGrid, filterText, columnId, textChangeEvent);
+                filterText = controller.filterGrid(clientsGrid, filterText, columnId, textChangeEvent);
             }
         });
         return filter;

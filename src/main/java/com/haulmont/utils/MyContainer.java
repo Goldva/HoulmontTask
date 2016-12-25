@@ -15,6 +15,7 @@ public class MyContainer {
         this.connection = connection;
         containerClients = new BeanItemContainer<>(Client.class, this.connection.getTableClients());
         containerOrders = new BeanItemContainer<>(Order.class, this.connection.getTableOrders());
+
     }
 
     public void addClient(Client client){
@@ -54,7 +55,11 @@ public class MyContainer {
             connection.deleteRowFromTable("orders", id);
             containerOrders.removeItem(itemId);
         }
+    }
 
+    public void setFilteredCollectionOrders(Collection<Order> orders){
+        containerOrders.removeAllItems();
+        containerOrders.addAll(orders);
     }
 
     public BeanItemContainer<Client> getContainerClients() {
@@ -66,5 +71,10 @@ public class MyContainer {
     }
 
     public Collection<Client> getListClients(){
-        return connection.getTableClients();}
+        return connection.getTableClients();
+    }
+
+    public Collection<Order> getListOrders(){
+        return connection.getTableOrders();
+    }
 }

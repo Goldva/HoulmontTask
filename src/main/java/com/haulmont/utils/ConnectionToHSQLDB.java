@@ -28,7 +28,8 @@ public class ConnectionToHSQLDB {
 
     private void getConnection() throws SQLException {
         try {
-            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
+            String path = "G:/java/houlmont/HoulmontTask/src/main/resources/dataDB/";
+//            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
             String dbname = "mydb";
             String connectionString = "jdbc:hsqldb:file:" + path + dbname;
             String login = "joe";
@@ -201,7 +202,4 @@ public class ConnectionToHSQLDB {
             e.printStackTrace();
         }
     }
-
 }
-
-

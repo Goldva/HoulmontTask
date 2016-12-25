@@ -11,7 +11,11 @@ import java.util.List;
 public class OrdersForm {
     private Panel ordersPanel;
     Controller controller;
-    private Grid ordersGrid;                                                                                               
+    private Grid ordersGrid;
+    private TextField aboutOrderFilter;
+    private TextField clientNamesFilter;
+    private TextField statusFilter;
+
 
     public OrdersForm(Panel ordersPanel) {
         this.ordersPanel = ordersPanel;
@@ -20,7 +24,7 @@ public class OrdersForm {
     }
 
     public void createOrderForm() {
-        GridLayout gridLayout = new GridLayout(4, 2);
+        GridLayout gridLayout = new GridLayout(4, 4);
         gridLayout.addStyleName("example-gridlayout");
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
@@ -30,9 +34,15 @@ public class OrdersForm {
         createOrdersTable();
         setColumnFiltering();
 
-        Button addOrderButton = new Button("Добавить");
-        Button updateOrderButton = new Button("Редактировать");
-        Button deleteOrderButton = new Button("Удалить");
+        Button addOrderButton = new Button("Add");
+        Button updateOrderButton = new Button("Editor");
+        Button deleteOrderButton = new Button("Delete");
+        Button applyFilter = new Button("Apply");
+
+        aboutOrderFilter = new TextField("About order");
+        clientNamesFilter = new TextField("Client name");
+        statusFilter = new TextField("Status");
+
 
         addOrderButton.addClickListener(clickEvent -> controller.createAddOrderCard(ordersPanel.getUI()));
         updateOrderButton.addClickListener(clickEvent -> {
@@ -43,6 +53,13 @@ public class OrdersForm {
         deleteOrderButton.addClickListener(e -> {
             controller.deleteOrders(ordersGrid.getSelectionModel().getSelectedRows());
             ordersGrid.deselectAll();
+        });
+
+        applyFilter.addClickListener(clickEvent -> {
+            String aboutOrder = aboutOrderFilter.getValue();
+            String clientName = clientNamesFilter.getValue();
+            String sttus = statusFilter.getValue();
+            controller.filtering(aboutOrder, clientName, sttus);
         });
 
         ordersGrid.addSelectionListener(e -> {
@@ -63,11 +80,15 @@ public class OrdersForm {
         deleteOrderButton.setEnabled(false);
 
         gridLayout.setSizeFull();
-        gridLayout.setColumnExpandRatio(3,2);
+        gridLayout.setColumnExpandRatio(3, 2);
         gridLayout.addComponent(addOrderButton, 0, 0);
         gridLayout.addComponent(updateOrderButton, 1, 0);
         gridLayout.addComponent(deleteOrderButton, 2, 0);
         gridLayout.addComponent(ordersGrid, 0, 1, 3, 1);
+        gridLayout.addComponent(aboutOrderFilter, 0, 2);
+        gridLayout.addComponent(clientNamesFilter, 1, 2);
+        gridLayout.addComponent(statusFilter, 2, 2);
+        gridLayout.addComponent(applyFilter, 0, 3);
     }
 
 
@@ -96,7 +117,7 @@ public class OrdersForm {
             if (columnName.equals("about order") || columnName.equals("client name") || columnName.equals("status")) {
                 TextField filter = getColumnFilter(column.getPropertyId());
                 filteringHeader.getCell(column.getPropertyId()).setComponent(filter);
-                filteringHeader.getCell(column.getPropertyId()).setStyleName("filter-header");
+                filteringHeader.getCell(column.getPropertyId()).setStyleName("filterGrid-header");
             }
         }
     }
@@ -112,11 +133,9 @@ public class OrdersForm {
 
             @Override
             public void textChange(FieldEvents.TextChangeEvent textChangeEvent) {
-                filterText = controller.filter(ordersGrid, filterText, columnId, textChangeEvent);
+                filterText = controller.filterGrid(ordersGrid, filterText, columnId, textChangeEvent);
             }
         });
         return filter;
     }
-
-
 }
