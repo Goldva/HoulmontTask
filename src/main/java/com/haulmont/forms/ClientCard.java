@@ -3,7 +3,6 @@ package com.haulmont.forms;
 import com.haulmont.datarows.Client;
 import com.haulmont.utils.Controller;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 
 import java.util.Arrays;

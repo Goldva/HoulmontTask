@@ -30,9 +30,9 @@ public class ClientsForm {
         createClientsTable();
         setColumnFiltering();
 
-        Button addClientButton = new Button("Äîáàâèòü");
-        Button updateClientButton = new Button("Ðåäàêòèðîâàòü");
-        Button deleteClientButton = new Button("Óäàëèòü");
+        Button addClientButton = new Button("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ");
+        Button updateClientButton = new Button("Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ");
+        Button deleteClientButton = new Button("Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ");
 
         addClientButton.addClickListener(clickEvent -> controller.createAddClientCard(clientsPanel.getUI()));
         updateClientButton.addClickListener(clickEvent -> {

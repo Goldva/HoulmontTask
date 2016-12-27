@@ -15,6 +15,7 @@ public class MyContainer {
         this.connection = connection;
         containerClients = new BeanItemContainer<>(Client.class, this.connection.getTableClients());
         containerOrders = new BeanItemContainer<>(Order.class, this.connection.getTableOrders());
+        connection.closeConnection();
 
     }
 

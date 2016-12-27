@@ -20,7 +20,7 @@ public class ConnectionToHSQLDB {
         try {
             Class.forName("org.hsqldb.jdbcDriver");
         } catch (ClassNotFoundException e) {
-            System.out.println("Драйвер не найден");
+            System.out.println("Р”СЂР°Р№РІРµСЂ РЅРµ РЅР°Р№РґРµРЅ");
             e.printStackTrace();
             throw new ClassNotFoundException();
         }
@@ -28,15 +28,17 @@ public class ConnectionToHSQLDB {
 
     private void getConnection() throws SQLException {
         try {
-            String path = "G:/java/houlmont/HoulmontTask/src/main/resources/dataDB/";
+//            String path = "G:/java/houlmont/HoulmontTask/src/main/resources/dataDB/";
 //            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
+            String path = "./src/main/resources/dataDB/";
             String dbname = "mydb";
             String connectionString = "jdbc:hsqldb:file:" + path + dbname;
             String login = "joe";
             String password = "password";
             conn = DriverManager.getConnection(connectionString, login, password);
+//            conn = DriverManager.getConnection(connectionString, login, password);
         } catch (SQLException e) {
-            System.out.println("Соединение не создано");
+            System.out.println("РЎРѕРµРґРёРЅРµРЅРёРµ РЅРµ СЃРѕР·РґР°РЅРѕ");
             e.printStackTrace();
             throw new SQLException();
         }
@@ -133,7 +135,7 @@ public class ConnectionToHSQLDB {
 
     public boolean deleteRowFromTable(String tableName, int id) {
         try(Statement statement = conn.createStatement()) {
-            String sql = String.format("DELETE FROM %s WHERE id = %d AND id NOT IN (SELECT clients_id FROM orders)", tableName, id);                                       //TODO: Нельзя удалить клиента если есть заказ
+            String sql = String.format("DELETE FROM %s WHERE id = %d AND id NOT IN (SELECT clients_id FROM orders)", tableName, id);                                       //TODO: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             int countDeletedRows = statement.executeUpdate(sql);
             if (countDeletedRows != 0)
                 return true;
@@ -164,7 +166,7 @@ public class ConnectionToHSQLDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;                                                                                                        //TODO: Подумать над return
+        return null;                                                                                                        //TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ return
     }
 
     public List<Order> getTableOrders() {
@@ -194,7 +196,7 @@ public class ConnectionToHSQLDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;                                                                                                        //TODO: Подумать над return
+        return null;                                                                                                        //TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ return
     }
 
     public void closeConnection() {

@@ -34,10 +34,10 @@ public class OrdersForm {
         createOrdersTable();
         setColumnFiltering();
 
-        Button addOrderButton = new Button("Add");
-        Button updateOrderButton = new Button("Editor");
-        Button deleteOrderButton = new Button("Delete");
-        Button applyFilter = new Button("Apply");
+        Button addOrderButton = new Button("Добавить");
+        Button updateOrderButton = new Button("Редактировать");
+        Button deleteOrderButton = new Button("Удалить");
+        Button applyFilter = new Button("Применить");
 
         aboutOrderFilter = new TextField("About order");
         clientNamesFilter = new TextField("Client name");

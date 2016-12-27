@@ -64,13 +64,7 @@ public class OrderCard implements Card {
         );
         clientsBox.addValidator(new NullValidator("Field should not be empty", false));
         createDate.addValidator(new NullValidator("Field should not be empty", false));
-//        createDate.addValidator(new DateRangeValidator(
-//                "Uncorrected date", new Date(), getEndDate().getValue(), null)
-//        );
         endDate.addValidator(new NullValidator("Field should not be empty", false));
-//        endDate.addValidator(new DateRangeValidator(
-//                        "Uncorrected date", getCreateDate().getValue(),  null, null)
-//        );
         price.addValidator(new NullValidator("Field should not be empty", false));
         status.addValidator(new NullValidator("Field should not be empty", false));
 
@@ -83,7 +77,7 @@ public class OrderCard implements Card {
         status.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         cancelButton.addClickListener(e -> controller.closeCard(subWindow));
 
-        status.addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
+        status.addItems(Arrays.asList("Р—Р°РїР»Р°РЅРёСЂРѕРІР°РЅ", "Р’С‹РїРѕР»РЅРµРЅ", "РџСЂРёРЅСЏС‚ РєР»РёРµРЅС‚РѕРј"));
 
         formLayout.addComponent(aboutOrderArea);
         formLayout.addComponent(clientsBox);
