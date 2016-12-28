@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Order implements DataTable{
-    private int orderId;
+    private long orderId;
     private String aboutOrder;
     private Client client;
     private Date createDate;
@@ -36,7 +36,7 @@ public class Order implements DataTable{
         this.status = status;
     }
 
-    public int getOrderId() {
+    public long getOrderId() {
         return orderId;
     }
 

@@ -29,14 +29,14 @@ public class ConnectionToHSQLDB {
     private void getConnection() throws SQLException {
         try {
 //            String path = "G:/java/houlmont/HoulmontTask/src/main/resources/dataDB/";
-//            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
-            String path = "./src/main/resources/dataDB/";
+            String path = "D:/Java/Houlmont/HoulmontTask/src/main/resources/dataDB/";
+//            String path = "./src/main/resources/dataDB/";
             String dbname = "mydb";
             String connectionString = "jdbc:hsqldb:file:" + path + dbname;
             String login = "joe";
             String password = "password";
+//            conn = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb", "SA", "");
             conn = DriverManager.getConnection(connectionString, login, password);
-//            conn = DriverManager.getConnection(connectionString, login, password);
         } catch (SQLException e) {
             System.out.println("Соединение не создано");
             e.printStackTrace();
@@ -46,20 +46,40 @@ public class ConnectionToHSQLDB {
 
     public void createTable() {
         try(Statement statement = conn.createStatement()) {
-            String sql = "CREATE TABLE clients (id IDENTITY , " +
-                    "firstname VARCHAR(255) , " +
-                    "surname VARCHAR(255) ," +
-                    "middlename VARCHAR(255) , " +
-                    "tel VARCHAR(40)) ";
+            String sql = "CREATE TABLE clients (id BIGINT IDENTITY," +
+                    "firstname VARCHAR(255)," +
+                    "surname VARCHAR(255)," +
+                    "middlename VARCHAR(255)," +
+                    "tel VARCHAR(40))," +
+                    "CONSTRAINT id_client PRIMARY KEY (id)";
             statement.executeUpdate(sql);
-            sql = "CREATE TABLE orders (id IDENTITY , " +
-                    "about_order VARCHAR(255) , " +
-                    "clients_id INT, " +
-                    "create_date DATE , " +
-                    "end_date DATE , " +
-                    "price DECIMAL (64, 2) , " +
-                    "status VARCHAR(255))";
+            sql = "CREATE TABLE orders (id BIGINT IDENTITY," +
+                    "about_order VARCHAR(255)," +
+                    "clients_id BIGINT," +
+                    "create_date DATE," +
+                    "end_date DATE," +
+                    "price DECIMAL (64, 2)," +
+                    "status VARCHAR(255)," +
+                    "CONSTRAINT id_order PRIMARY KEY (id)," +
+                    "CONSTRAINT id_clients FOREIGN KEY (clients_id) REFERENCES clients(id))";
             statement.executeUpdate(sql);
+            sql = "INSERT INTO clients (firstname, surname, middlename, tel) VALUES ('Петров', 'Петр', 'Петрович', 86132255213)\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO clients (firstname, surname, middlename, tel) VALUES ('Иванов', 'Иван', 'Иваныч', 5578668763)\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO clients (firstname, surname, middlename, tel) VALUES ('Соколов', 'Федор', 'Петрович', 557453664)\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO clients (firstname, surname, middlename, tel) VALUES ('Хлебушкин', 'Хлебец', 'Хлебович', 777896321)\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO clients (firstname, surname, middlename, tel) VALUES ('Люк', 'яТвой', 'Отец', 68777985132)\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) VALUES ('Ремонт КП', 2, '2009-01-10', '2010-12-04', 6000.00, 'Запланирован')\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) VALUES ('Смена масла', 4, '2009-01-10', '2010-12-04', 2000.00, 'Выполнен')\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) VALUES ('Чистка гиперпрыжкового двягателя модели \"Звезда смерти\"', 5, '2070-01-10', '2075-12-04', 1000000.00, 'Запланирован')\n";
+            statement.executeUpdate(sql);
+            sql = "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) VALUES ('Ремонт тостера', 4, '2012-01-04', '2012-12-05', 500.00, 'Запланирован')\n";
 //            sql = "ALTER TABLE orders ADD FOREIGN KEY (clients_id) REFERENCES clients(id)";
             statement.executeUpdate(sql);
 
@@ -92,7 +112,7 @@ public class ConnectionToHSQLDB {
             statement.setString(2, client.getSurName());
             statement.setString(3, client.getMiddleName());
             statement.setString(4, client.getTelephone());
-            statement.setInt(5, client.getClientId());
+            statement.setLong(5, client.getClientId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +125,7 @@ public class ConnectionToHSQLDB {
                             "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) " +
                                     "VALUES (?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, order.getAboutOrder());
-            statement.setInt(2, order.getClient().getClientId());
+            statement.setLong(2, order.getClient().getClientId());
             statement.setDate(3, new Date(order.getMillisecondCreateDate()));
             statement.setDate(4, new Date(order.getMillisecondEndDate()));
             statement.setDouble(5, order.getPrice());
@@ -126,16 +146,16 @@ public class ConnectionToHSQLDB {
             statement.setDate(2, new Date(order.getMillisecondEndDate()));
             statement.setDouble(3, order.getPrice());
             statement.setString(4, order.getStatus());
-            statement.setInt(5, order.getOrderId());
+            statement.setLong(5, order.getOrderId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean deleteRowFromTable(String tableName, int id) {
+    public boolean deleteRowFromTable(String tableName, long id) {
         try(Statement statement = conn.createStatement()) {
-            String sql = String.format("DELETE FROM %s WHERE id = %d AND id NOT IN (SELECT clients_id FROM orders)", tableName, id);                                       //TODO: ������ ������� ������� ���� ���� �����
+            String sql = String.format("DELETE FROM %s WHERE id = %d", tableName, id);                                       //TODO: ������ ������� ������� ���� ���� �����
             int countDeletedRows = statement.executeUpdate(sql);
             if (countDeletedRows != 0)
                 return true;

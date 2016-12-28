@@ -15,8 +15,6 @@ public class MyContainer {
         this.connection = connection;
         containerClients = new BeanItemContainer<>(Client.class, this.connection.getTableClients());
         containerOrders = new BeanItemContainer<>(Order.class, this.connection.getTableOrders());
-        connection.closeConnection();
-
     }
 
     public void addClient(Client client){
@@ -32,7 +30,7 @@ public class MyContainer {
     }
     public void deleteClients(Collection<Object> deleteRows){
         for (Object itemId: deleteRows) {
-            int id = ((Client) itemId).getClientId();
+            long id = ((Client) itemId).getClientId();
             if(connection.deleteRowFromTable("clients", id))
                 containerClients.removeItem(itemId);
         }
@@ -52,7 +50,7 @@ public class MyContainer {
 
     public void deleteOrders(Collection<Object> deleteRows){
         for (Object itemId: deleteRows) {
-            int id = ((Order) itemId).getOrderId();
+            long id = ((Order) itemId).getOrderId();
             if (connection.deleteRowFromTable("orders", id))
                 containerOrders.removeItem(itemId);
         }

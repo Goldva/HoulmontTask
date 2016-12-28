@@ -1,7 +1,7 @@
 package com.haulmont.datarows;
 
 public class Client implements DataTable{
-    private int clientId;
+    private long clientId;
     private String firstName;
     private String surName;
     private String middleName;
@@ -21,7 +21,7 @@ public class Client implements DataTable{
         this.telephone = telephone;
     }
 
-    public int getClientId() {
+    public long getClientId() {
         return clientId;
     }
 
@@ -84,7 +84,7 @@ public class Client implements DataTable{
 
     @Override
     public int hashCode() {
-        int result = clientId;
+        int result = (int) (clientId ^ (clientId >>> 32));
         result = 31 * result + firstName.hashCode();
         result = 31 * result + surName.hashCode();
         result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
