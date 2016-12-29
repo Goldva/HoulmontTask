@@ -74,7 +74,7 @@ public class ClientsForm {
     private void createClientsTable() {
         clientsGrid = new Grid(controller.getContainerClients());
         clientsGrid.removeColumn("asArrayObjects");
-        clientsGrid.setColumnOrder("clientId", "firstName", "surName", "middleName", "telephone");
+        clientsGrid.setColumnOrder("clientId", "surName", "firstName", "middleName", "telephone");
 
         clientsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         clientsGrid.getColumn("firstName").setExpandRatio(1);

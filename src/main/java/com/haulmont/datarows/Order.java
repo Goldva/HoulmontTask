@@ -4,7 +4,7 @@ package com.haulmont.datarows;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Order implements DataTable{
+public class Order implements DataTable {
     private long orderId;
     private String aboutOrder;
     private Client client;
@@ -52,7 +52,7 @@ public class Order implements DataTable{
         return client;
     }
 
-    public String getClientName(){
+    public String getClientName() {
         return client.toString();
     }
 
@@ -72,12 +72,12 @@ public class Order implements DataTable{
         return sdf.format(endDate);
     }
 
-    public long getMillisecondEndDate() {
-        return endDate.getTime();
-    }
-
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public long getMillisecondEndDate() {
+        return endDate.getTime();
     }
 
     public double getPrice() {
@@ -97,7 +97,7 @@ public class Order implements DataTable{
     }
 
     @Override
-    public Object[] getAsArrayObjects(){
+    public Object[] getAsArrayObjects() {
         return new Object[]{orderId, aboutOrder, client.getFirstName(), client.getSurName(), client.getTelephone(),
                 createDate, endDate, price, status};
     }
