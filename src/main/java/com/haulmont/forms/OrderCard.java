@@ -56,6 +56,12 @@ public class OrderCard implements Card {
         subWindow.setContent(formLayout);
         subWindow.setWidth("350px");
 
+        clientsBox.setInputPrompt("Enter client");
+        clientsBox.setNullSelectionAllowed(false);
+
+        status.setInputPrompt("Enter status");
+        status.setNullSelectionAllowed(false);
+
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setSpacing(true);
 

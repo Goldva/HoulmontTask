@@ -7,6 +7,7 @@ import com.haulmont.forms.ClientsForm;
 import com.haulmont.forms.OrderCard;
 import com.haulmont.forms.OrdersForm;
 import com.haulmont.utils.ClientContainer;
+import com.haulmont.utils.ClientDAO;
 import com.haulmont.utils.OrderContainer;
 import com.haulmont.utils.OrderDAO;
 import com.vaadin.data.Container;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ public class OrderController {
     public OrderController() {
         try {
             orderContainer = new OrderContainer(new OrderDAO());
+            clientContainer = new ClientContainer(new ClientDAO());
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
