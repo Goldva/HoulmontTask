@@ -1,6 +1,6 @@
 package com.haulmont.forms;
 
-import com.haulmont.utils.Controller;
+import com.haulmont.forms.mvc.ClientController;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
@@ -9,17 +9,17 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 
 public class ClientsForm {
-    private Panel clientsPanel;
-    private Controller controller;
-    private Grid clientsGrid;
+    Panel clientsPanel;
+    ClientController controller;
+    Grid clientsGrid;
 
-    public ClientsForm(Panel clientsPanel) {
+    public ClientsForm(Panel clientsPanel, ClientController controller) {
         this.clientsPanel = clientsPanel;
-        controller = Controller.getInstance();
+        this.controller = controller;
         createForm();
     }
 
-    public void createForm() {
+    private void createForm() {
         GridLayout gridLayout = new GridLayout(4, 2);
         gridLayout.addStyleName("example-gridlayout");
         gridLayout.setMargin(true);
@@ -34,14 +34,14 @@ public class ClientsForm {
         Button updateClientButton = new Button("Редактировать");
         Button deleteClientButton = new Button("Удалить");
 
-        addClientButton.addClickListener(clickEvent -> controller.createAddClientCard(clientsPanel.getUI()));
+        addClientButton.addClickListener(clickEvent -> controller.createAddCard());
         updateClientButton.addClickListener(clickEvent -> {
             Object client = clientsGrid.getSelectionModel().getSelectedRows().iterator().next();
-            controller.createUpdateClientCard(clientsPanel.getUI(), client);
+            controller.createUpdateCard(client);
             clientsGrid.deselectAll();
         });
         deleteClientButton.addClickListener(e -> {
-            controller.deleteClients(clientsGrid.getSelectionModel().getSelectedRows());
+            controller.deleteRows(clientsGrid.getSelectionModel().getSelectedRows());
             clientsGrid.deselectAll();
         });
 
@@ -72,7 +72,7 @@ public class ClientsForm {
 
 
     private void createClientsTable() {
-        clientsGrid = new Grid(controller.getContainerClients());
+        clientsGrid = new Grid(controller.getContainer());
         clientsGrid.removeColumn("asArrayObjects");
         clientsGrid.setColumnOrder("clientId", "surName", "firstName", "middleName", "telephone");
 
@@ -105,7 +105,7 @@ public class ClientsForm {
 
             @Override
             public void textChange(FieldEvents.TextChangeEvent textChangeEvent) {
-                filterText = controller.filterGrid(clientsGrid, filterText, columnId, textChangeEvent);
+//                filterText = controller.filterGrid(clientsGrid, filterText, columnId, textChangeEvent);
             }
         });
         return filter;

@@ -1,7 +1,7 @@
 package com.haulmont.forms;
 
 import com.haulmont.datarows.Order;
-import com.haulmont.utils.Controller;
+import com.haulmont.forms.mvc.OrderController;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.data.validator.StringLengthValidator;
@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 
 public class OrderCard implements Card {
-    private UI myUI;
-    private Controller controller;
+    protected Panel panel;
+    protected OrderController controller;
     private Window subWindow;
 
     private TextArea aboutOrderArea;
@@ -26,9 +26,9 @@ public class OrderCard implements Card {
     private Button okButton;
     private Button cancelButton;
 
-    public OrderCard(UI myUI) {
-        this.myUI = myUI;
-        this.controller = Controller.getInstance();
+    public OrderCard(Panel panel, OrderController orderController) {
+        this.panel = panel;
+        this.controller = orderController;
         this.aboutOrderArea = new TextArea("About order");
         this.clientsBox = new ComboBox("Clients");
         this.createDate = new DateField("Date create order", new ObjectProperty<>(new GregorianCalendar().getTime()));
@@ -41,11 +41,11 @@ public class OrderCard implements Card {
     }
 
     public void addOrder() {
-        okButton.addClickListener(e -> controller.addRowToTable(this));
+        okButton.addClickListener(e -> controller.addRow());
     }
 
     public void editorOrder(Order order) {
-        okButton.addClickListener(e -> controller.updateRowInTheTable(this, order));
+        okButton.addClickListener(e -> controller.updateRow(order));
     }
 
     private Window createWindow() {
@@ -91,7 +91,7 @@ public class OrderCard implements Card {
 
         subWindow.center();
         subWindow.setModal(true);
-        myUI.addWindow(subWindow);
+        panel.getUI().addWindow(subWindow);
         return subWindow;
     }
 

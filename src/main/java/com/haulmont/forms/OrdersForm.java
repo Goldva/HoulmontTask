@@ -1,6 +1,6 @@
 package com.haulmont.forms;
 
-import com.haulmont.utils.Controller;
+import com.haulmont.forms.mvc.OrderController;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
@@ -9,17 +9,17 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 
 public class OrdersForm {
-    private Panel ordersPanel;
-    Controller controller;
-    private Grid ordersGrid;
-    private TextField aboutOrderFilter;
-    private TextField clientNamesFilter;
-    private TextField statusFilter;
+    Panel ordersPanel;
+    OrderController controller;
+    Grid ordersGrid;
+    TextField aboutOrderFilter;
+    TextField clientNamesFilter;
+    TextField statusFilter;
 
 
-    public OrdersForm(Panel ordersPanel) {
-        this.ordersPanel = ordersPanel;
-        controller = Controller.getInstance();
+    public OrdersForm(Panel clientsPanel, OrderController orderController) {
+        this.ordersPanel = clientsPanel;
+        controller = orderController;
         createOrderForm();
     }
 
@@ -44,14 +44,14 @@ public class OrdersForm {
         statusFilter = new TextField("Status");
 
 
-        addOrderButton.addClickListener(clickEvent -> controller.createAddOrderCard(ordersPanel.getUI()));
+        addOrderButton.addClickListener(clickEvent -> controller.createAddCard());
         updateOrderButton.addClickListener(clickEvent -> {
             Object order = ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
-            controller.createUpdateOrderCard(ordersPanel.getUI(), order);
+            controller.createUpdateCard(order);
             ordersGrid.deselectAll();
         });
         deleteOrderButton.addClickListener(e -> {
-            controller.deleteOrders(ordersGrid.getSelectionModel().getSelectedRows());
+            controller.deleteRows(ordersGrid.getSelectionModel().getSelectedRows());
             ordersGrid.deselectAll();
         });
 
@@ -93,7 +93,7 @@ public class OrdersForm {
 
 
     private void createOrdersTable() {
-        ordersGrid = new Grid(controller.getContainerOrders());
+        ordersGrid = new Grid(controller.getContainer());
         ordersGrid.removeColumn("client");
         ordersGrid.removeColumn("asArrayObjects");
         ordersGrid.removeColumn("millisecondCreateDate");

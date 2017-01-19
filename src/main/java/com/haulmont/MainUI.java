@@ -1,7 +1,7 @@
 package com.haulmont;
 
-import com.haulmont.forms.ClientsForm;
-import com.haulmont.forms.OrdersForm;
+import com.haulmont.forms.mvc.ClientController;
+import com.haulmont.forms.mvc.OrderController;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.MenuBar;
@@ -13,9 +13,15 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @Theme(ValoTheme.THEME_NAME)
 public class MainUI extends UI {
+    private ClientController clientController;
+    private OrderController orderController;
+
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        clientController = ClientController.getInstance();
+        orderController = OrderController.getInstance();
+
         VerticalLayout layout = new VerticalLayout();
         MenuBar menu = new MenuBar();
         menu.addStyleName(ValoTheme.THEME_NAME);
@@ -27,7 +33,7 @@ public class MainUI extends UI {
             MenuBar.MenuItem previous = null;
 
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                new ClientsForm(menuPanel);
+                clientController.createForm(menuPanel);
                 if (previous != null)
                     previous.setStyleName(null);
                 selectedItem.setStyleName(ValoTheme.THEME_NAME);
@@ -39,7 +45,7 @@ public class MainUI extends UI {
             MenuBar.MenuItem previous = null;
 
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                new OrdersForm(menuPanel);
+                orderController.createForm(menuPanel);
                 if (previous != null)
                     previous.setStyleName(null);
                 selectedItem.setStyleName(ValoTheme.THEME_NAME);

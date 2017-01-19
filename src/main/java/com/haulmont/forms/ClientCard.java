@@ -1,7 +1,7 @@
 package com.haulmont.forms;
 
 import com.haulmont.datarows.Client;
-import com.haulmont.utils.Controller;
+import com.haulmont.forms.mvc.ClientController;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 
@@ -10,19 +10,19 @@ import java.util.Collection;
 
 
 public class ClientCard implements Card {
-    private UI myUI;
-    private Controller controller;
+    protected Panel panel;
+    protected ClientController controller;
     private Window subWindow;
-    private TextField firstNameField;
+    TextField firstNameField;
     private TextField surNameField;
     private TextField middleNameField;
     private TextField telephoneField;
     private Button okButton;
     private Button cancelButton;
 
-    public ClientCard(UI myUI) {
-        this.myUI = myUI;
-        this.controller = Controller.getInstance();
+    public ClientCard(Panel panel, ClientController controller) {
+        this.panel = panel;
+        this.controller = controller;
         this.firstNameField = new TextField("First Name");
         this.surNameField = new TextField("Surname");
         this.middleNameField = new TextField("Middle Name");
@@ -33,11 +33,11 @@ public class ClientCard implements Card {
     }
 
     public void addClient() {
-        okButton.addClickListener(e -> controller.addRowToTable(this));
+        okButton.addClickListener(e -> controller.addRow());
     }
 
     public void editorClient(Client client) {
-        okButton.addClickListener(e -> controller.updateRowInTheTable(this, client));
+        okButton.addClickListener(e -> controller.updateRow(client));
     }
 
     private Window createWindow(){
@@ -59,7 +59,7 @@ public class ClientCard implements Card {
         firstNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         surNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
         telephoneField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        cancelButton.addClickListener(e -> controller.closeCard(subWindow));
+        cancelButton.addClickListener(e -> subWindow.close());
 
         formLayout.addComponent(firstNameField);
         formLayout.addComponent(surNameField);
@@ -71,7 +71,7 @@ public class ClientCard implements Card {
 
         subWindow.center();
         subWindow.setModal(true);
-        myUI.addWindow(subWindow);
+        panel.getUI().addWindow(subWindow);
         return subWindow;
     }
 
