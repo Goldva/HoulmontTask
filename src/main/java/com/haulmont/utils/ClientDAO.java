@@ -2,12 +2,14 @@ package com.haulmont.utils;
 
 import com.haulmont.datarows.Client;
 
-
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientDAO extends Dao{
+public class ClientDAO extends Dao {
 
     public ClientDAO() throws ClassNotFoundException, SQLException {
         super();
@@ -15,7 +17,7 @@ public class ClientDAO extends Dao{
 
     @Override
     public void createTable() {
-        try(Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.createStatement()) {
             String sql = "CREATE TABLE clients (id BIGINT IDENTITY," +
                     "firstname VARCHAR(255)," +
                     "surname VARCHAR(255)," +
@@ -30,10 +32,10 @@ public class ClientDAO extends Dao{
     @Override
     public void addRow(Object object) {
         Client client = (Client) object;
-        try(PreparedStatement statement =
-                    conn.prepareStatement(
-                            "INSERT INTO clients (firstname, surname, middlename, tel) " +
-                                    "VALUES (?, ?, ?, ?)")) {
+        try (PreparedStatement statement =
+                     conn.prepareStatement(
+                             "INSERT INTO clients (firstname, surname, middlename, tel) " +
+                                     "VALUES (?, ?, ?, ?)")) {
             statement.setString(1, client.getFirstName());
             statement.setString(2, client.getSurName());
             statement.setString(3, client.getMiddleName());
@@ -45,13 +47,13 @@ public class ClientDAO extends Dao{
     }
 
     @Override
-    public void updateRow(Object object){
+    public void updateRow(Object object) {
         Client client = (Client) object;
-        try(PreparedStatement statement =
-                    conn.prepareStatement(
-                            "UPDATE clients " +
-                                    "SET firstname = ?, surname = ?, middlename = ?, tel = ?" +
-                                    "WHERE id = ?")) {
+        try (PreparedStatement statement =
+                     conn.prepareStatement(
+                             "UPDATE clients " +
+                                     "SET firstname = ?, surname = ?, middlename = ?, tel = ?" +
+                                     "WHERE id = ?")) {
             statement.setString(1, client.getFirstName());
             statement.setString(2, client.getSurName());
             statement.setString(3, client.getMiddleName());
@@ -66,7 +68,7 @@ public class ClientDAO extends Dao{
     @Override
     public boolean deleteRow(Object object) {
         Client client = (Client) object;
-        try(Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.createStatement()) {
             String sql = String.format("DELETE FROM clients WHERE id = %d", client.getClientId());
             int countDeletedRows = statement.executeUpdate(sql);                                                //TODO: исправить
             if (countDeletedRows != 0)

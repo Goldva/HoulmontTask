@@ -1,6 +1,9 @@
 package com.haulmont.utils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public abstract class Dao {
@@ -39,7 +42,7 @@ public abstract class Dao {
     }
 
     public void closeConnection() {
-        try(Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.createStatement()) {
             String sql = "SHUTDOWN";
             statement.execute(sql);
         } catch (SQLException e) {

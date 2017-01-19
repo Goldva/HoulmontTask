@@ -14,21 +14,21 @@ public class ClientContainer {
         containerClients = new BeanItemContainer<>(Client.class, this.connection.getTable());                   //TODO: подумать
     }
 
-    public void addClient(Client client){
+    public void addClient(Client client) {
         connection.addRow(client);
         containerClients.removeAllItems();
         containerClients.addAll(connection.getTable());
     }
 
-    public void updateClient(Client client){
+    public void updateClient(Client client) {
         connection.updateRow(client);
         containerClients.removeAllItems();
         containerClients.addAll(connection.getTable());
     }
 
-    public void deleteClients(Collection<Object> deleteRows){
-        for (Object item: deleteRows) {
-            if(connection.deleteRow(item))
+    public void deleteClients(Collection<Object> deleteRows) {
+        for (Object item : deleteRows) {
+            if (connection.deleteRow(item))
                 containerClients.removeItem(item);
         }
     }
@@ -37,7 +37,7 @@ public class ClientContainer {
         return containerClients;
     }
 
-    public Collection<Client> getListClients(){
+    public Collection<Client> getListClients() {
         return connection.getTable();
     }
 }

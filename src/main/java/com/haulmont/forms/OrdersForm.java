@@ -111,8 +111,8 @@ public class OrdersForm {
     private void setColumnFiltering() {
         Grid.HeaderRow filteringHeader = ordersGrid.appendHeaderRow();
 
-        List<Grid.Column> columns =ordersGrid.getColumns();
-        for (Grid.Column column : columns){
+        List<Grid.Column> columns = ordersGrid.getColumns();
+        for (Grid.Column column : columns) {
             String columnName = column.getHeaderCaption().toLowerCase();
             if (columnName.equals("about order") || columnName.equals("client name") || columnName.equals("status")) {
                 TextField filter = getColumnFilter(column.getPropertyId());

@@ -14,7 +14,7 @@ public class OrderContainer {
         containerOrders = new BeanItemContainer<>(Order.class, this.connection.getTable());                   //TODO: подумать
     }
 
-    public void addOrder(Order order){
+    public void addOrder(Order order) {
         connection.addRow(order);
         containerOrders.removeAllItems();
         containerOrders.addAll(connection.getTable());
@@ -26,14 +26,14 @@ public class OrderContainer {
         containerOrders.addAll(connection.getTable());
     }
 
-    public void deleteOrders(Collection<Object> deleteRows){
-        for (Object item: deleteRows) {
+    public void deleteOrders(Collection<Object> deleteRows) {
+        for (Object item : deleteRows) {
             if (connection.deleteRow(item))
                 containerOrders.removeItem(item);
         }
     }
 
-    public void setFilteredCollectionOrders(Collection<Order> orders){
+    public void setFilteredCollectionOrders(Collection<Order> orders) {
         containerOrders.removeAllItems();
         containerOrders.addAll(orders);
     }
@@ -42,7 +42,7 @@ public class OrderContainer {
         return containerOrders;
     }
 
-    public Collection<Order> getListOrders(){
+    public Collection<Order> getListOrders() {
         return connection.getTable();
     }
 }

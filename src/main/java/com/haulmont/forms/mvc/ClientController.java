@@ -7,18 +7,19 @@ import com.haulmont.forms.ClientsForm;
 import com.haulmont.utils.ClientContainer;
 import com.haulmont.utils.ClientDAO;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Panel;
 
 import java.sql.SQLException;
 import java.util.Collection;
 
 public class ClientController {
+    private static ClientController instance = null;
     private ClientContainer container;
     private Panel menuPanel;
     private ClientsForm clientsForm;
     private ClientCard clientCard;
-
-    private static ClientController instance = null;
 
     public ClientController() {
         try {
@@ -29,13 +30,13 @@ public class ClientController {
     }
 
     public static ClientController getInstance() {
-        if (instance==null) {
+        if (instance == null) {
             instance = new ClientController();
         }
         return instance;
     }
 
-    public void createForm(Panel menuPanel){
+    public void createForm(Panel menuPanel) {
         this.menuPanel = menuPanel;
         this.clientsForm = new ClientsForm(menuPanel, this);
     }

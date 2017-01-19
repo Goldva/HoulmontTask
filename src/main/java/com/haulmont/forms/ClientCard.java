@@ -12,8 +12,8 @@ import java.util.Collection;
 public class ClientCard implements Card {
     protected Panel panel;
     protected ClientController controller;
-    private Window subWindow;
     TextField firstNameField;
+    private Window subWindow;
     private TextField surNameField;
     private TextField middleNameField;
     private TextField telephoneField;
@@ -40,7 +40,7 @@ public class ClientCard implements Card {
         okButton.addClickListener(e -> controller.updateRow(client));
     }
 
-    private Window createWindow(){
+    private Window createWindow() {
         Window subWindow = new Window("Client card");
         FormLayout formLayout = new FormLayout();
         formLayout.setSpacing(true);

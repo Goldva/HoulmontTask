@@ -3,7 +3,6 @@ package com.haulmont.forms.mvc;
 import com.haulmont.datarows.Client;
 import com.haulmont.datarows.Order;
 import com.haulmont.forms.Card;
-import com.haulmont.forms.ClientsForm;
 import com.haulmont.forms.OrderCard;
 import com.haulmont.forms.OrdersForm;
 import com.haulmont.utils.ClientContainer;
@@ -20,18 +19,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OrderController {
+    private static OrderController instance = null;
     private OrderContainer orderContainer;
     private ClientContainer clientContainer;
     private Panel menuPanel;
     private OrdersForm ordersForm;
     private OrderCard orderCard;
-
-    private static OrderController instance = null;
 
     public OrderController() {
         try {
@@ -43,13 +40,13 @@ public class OrderController {
     }
 
     public static OrderController getInstance() {
-        if (instance==null) {
+        if (instance == null) {
             instance = new OrderController();
         }
         return instance;
     }
 
-    public void createForm(Panel menuPanel){
+    public void createForm(Panel menuPanel) {
         this.menuPanel = menuPanel;
         this.ordersForm = new OrdersForm(menuPanel, this);
     }
@@ -110,7 +107,7 @@ public class OrderController {
         orderContainer.deleteOrders(deleteOrders);
     }
 
-    public SimpleStringFilter filterGrid(Grid grid, SimpleStringFilter filterText, Object columnId, FieldEvents.TextChangeEvent textChangeEvent){
+    public SimpleStringFilter filterGrid(Grid grid, SimpleStringFilter filterText, Object columnId, FieldEvents.TextChangeEvent textChangeEvent) {
         Container.Filterable filterable = (Container.Filterable) grid.getContainerDataSource();
         if (filterText != null)
             filterable.removeContainerFilter(filterText);
@@ -124,12 +121,12 @@ public class OrderController {
         return filterText;
     }
 
-    public void filtering(String aboutOrder, String clientName, String status){
+    public void filtering(String aboutOrder, String clientName, String status) {
         Collection<Order> orders = orderContainer.getListOrders();
         Collection<Order> result = new ArrayList<>();
         result.addAll(orders);
 
-        for (Order order : orders){
+        for (Order order : orders) {
             if (!checkText(aboutOrder, order.getAboutOrder())) {
                 result.remove(order);
                 continue;
@@ -145,7 +142,7 @@ public class OrderController {
         orderContainer.setFilteredCollectionOrders(result);
     }
 
-    public boolean checkText(String regExp, String text){
+    public boolean checkText(String regExp, String text) {
         Pattern pattern = Pattern.compile(".*" + regExp + ".*");
         Matcher matcher = pattern.matcher(text);
         return matcher.matches();

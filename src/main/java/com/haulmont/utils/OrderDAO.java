@@ -32,10 +32,10 @@ public class OrderDAO extends Dao {
     @Override
     public void addRow(Object object) {
         Order order = (Order) object;
-        try(PreparedStatement statement =
-                    conn.prepareStatement(
-                            "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) " +
-                                    "VALUES (?, ?, ?, ?, ?, ?)")) {
+        try (PreparedStatement statement =
+                     conn.prepareStatement(
+                             "INSERT INTO orders (about_order, clients_id, create_date, end_date, price, status) " +
+                                     "VALUES (?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, order.getAboutOrder());
             statement.setLong(2, order.getClient().getClientId());
             statement.setDate(3, new Date(order.getMillisecondCreateDate()));
@@ -70,7 +70,7 @@ public class OrderDAO extends Dao {
     @Override
     public boolean deleteRow(Object object) {
         Order order = (Order) object;
-        try(Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.createStatement()) {
             String sql = String.format("DELETE FROM orders WHERE id = %d", order.getOrderId());
             int countDeletedRows = statement.executeUpdate(sql);                                                //TODO: исправить
             if (countDeletedRows != 0)
@@ -97,7 +97,7 @@ public class OrderDAO extends Dao {
                 client.setTelephone(resultSet.getNString("tel"));
 
 
-                Order order  = new Order(resultSet.getInt("id"), client, resultSet.getDate("create_date"));
+                Order order = new Order(resultSet.getInt("id"), client, resultSet.getDate("create_date"));
                 order.setAboutOrder(resultSet.getString("about_order"));
                 order.setEndDate(resultSet.getDate("end_date"));
                 order.setPrice(resultSet.getDouble("price"));

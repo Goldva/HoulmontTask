@@ -63,7 +63,7 @@ public class ClientsForm {
         deleteClientButton.setEnabled(false);
 
         gridLayout.setSizeFull();
-        gridLayout.setColumnExpandRatio(3,2);
+        gridLayout.setColumnExpandRatio(3, 2);
         gridLayout.addComponent(addClientButton, 0, 0);
         gridLayout.addComponent(updateClientButton, 1, 0);
         gridLayout.addComponent(deleteClientButton, 2, 0);
@@ -86,8 +86,8 @@ public class ClientsForm {
 
     private void setColumnFiltering() {
         Grid.HeaderRow filteringHeader = clientsGrid.appendHeaderRow();
-        List<Grid.Column> columns =clientsGrid.getColumns();
-        for (Grid.Column column : columns){
+        List<Grid.Column> columns = clientsGrid.getColumns();
+        for (Grid.Column column : columns) {
             TextField filter = getColumnFilter(column.getPropertyId());
             filteringHeader.getCell(column.getPropertyId()).setComponent(filter);
             filteringHeader.getCell(column.getPropertyId()).setStyleName("filterGrid-header");
