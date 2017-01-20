@@ -40,7 +40,7 @@ public class OrderContainer {
         return containerOrders;
     }
 
-    private void refresh(){
+    private void refresh() {
         containerOrders.removeAllItems();
         containerOrders.addAll(connection.getTable());
     }

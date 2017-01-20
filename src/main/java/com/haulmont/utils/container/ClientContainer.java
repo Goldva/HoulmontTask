@@ -35,7 +35,7 @@ public class ClientContainer {
         return containerClients;
     }
 
-    private void refresh(){
+    private void refresh() {
         containerClients.removeAllItems();
         containerClients.addAll(connection.getTable());
     }

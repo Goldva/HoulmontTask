@@ -2,18 +2,19 @@ package com.haulmont.forms.mvc;
 
 import com.haulmont.datarows.Client;
 import com.haulmont.datarows.Order;
-import com.haulmont.forms.Card;
 import com.haulmont.forms.OrderCard;
 import com.haulmont.forms.OrdersForm;
 import com.haulmont.utils.container.ClientContainer;
-import com.haulmont.utils.dao.ClientDAO;
 import com.haulmont.utils.container.OrderContainer;
+import com.haulmont.utils.dao.ClientDAO;
 import com.haulmont.utils.dao.OrderDAO;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Window;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

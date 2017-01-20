@@ -1,14 +1,11 @@
 package com.haulmont.forms.mvc;
 
 import com.haulmont.datarows.Client;
-import com.haulmont.forms.Card;
 import com.haulmont.forms.ClientCard;
 import com.haulmont.forms.ClientsForm;
 import com.haulmont.utils.container.ClientContainer;
 import com.haulmont.utils.dao.ClientDAO;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Panel;
 
 import java.sql.SQLException;

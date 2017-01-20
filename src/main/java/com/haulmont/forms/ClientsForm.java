@@ -2,12 +2,10 @@ package com.haulmont.forms;
 
 import com.haulmont.forms.mvc.ClientController;
 import com.haulmont.forms.mvc.ViewsControl;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
-
-import java.util.List;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
 
 public class ClientsForm implements Form {
     private Panel clientsPanel;
