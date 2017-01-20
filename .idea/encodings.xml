@@ -8,8 +8,6 @@
     <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/forms/ClientsForm.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/forms/OrderCard.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/forms/OrdersForm.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/forms/mvc/Controller.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/haulmont/utils/ConnectionToHSQLDB.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources/dataDB/mydb.properties" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/resources/dataDB/mydb.script" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib" charset="windows-1251" />
