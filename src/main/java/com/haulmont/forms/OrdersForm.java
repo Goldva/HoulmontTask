@@ -1,6 +1,7 @@
 package com.haulmont.forms;
 
 import com.haulmont.forms.mvc.OrderController;
+import com.haulmont.forms.mvc.ViewsControl;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
@@ -8,18 +9,31 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.List;
 
-public class OrdersForm {
-    Panel ordersPanel;
-    OrderController controller;
+public class OrdersForm implements Form{
+    private Panel ordersPanel;
+    private OrderController controller;
+    private ViewsControl viewsControl;
     Grid ordersGrid;
     TextField aboutOrderFilter;
     TextField clientNamesFilter;
     TextField statusFilter;
+    Button addOrderButton;
+    Button updateOrderButton;
+    Button deleteOrderButton;
+    Button applyFilter;
 
 
     public OrdersForm(Panel clientsPanel, OrderController orderController) {
         this.ordersPanel = clientsPanel;
-        controller = orderController;
+        this.controller = orderController;
+        this.viewsControl = new ViewsControl();
+        this.aboutOrderFilter = new TextField("About order");
+        this.clientNamesFilter = new TextField("Client name");
+        this.statusFilter = new TextField("Status");
+        this.addOrderButton = new Button("Добавить");
+        this.updateOrderButton = new Button("Редактировать");
+        this.deleteOrderButton = new Button("Удалить");
+        this.applyFilter = new Button("Применить");
         createOrderForm();
     }
 
@@ -33,48 +47,7 @@ public class OrdersForm {
 
         createOrdersTable();
         setColumnFiltering();
-
-        Button addOrderButton = new Button("Добавить");
-        Button updateOrderButton = new Button("Редактировать");
-        Button deleteOrderButton = new Button("Удалить");
-        Button applyFilter = new Button("Применить");
-
-        aboutOrderFilter = new TextField("About order");
-        clientNamesFilter = new TextField("Client name");
-        statusFilter = new TextField("Status");
-
-
-        addOrderButton.addClickListener(clickEvent -> controller.createAddCard());
-        updateOrderButton.addClickListener(clickEvent -> {
-            Object order = ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
-            controller.createUpdateCard(order);
-            ordersGrid.deselectAll();
-        });
-        deleteOrderButton.addClickListener(e -> {
-            controller.deleteRows(ordersGrid.getSelectionModel().getSelectedRows());
-            ordersGrid.deselectAll();
-        });
-
-        applyFilter.addClickListener(clickEvent -> {
-            String aboutOrder = aboutOrderFilter.getValue();
-            String clientName = clientNamesFilter.getValue();
-            String sttus = statusFilter.getValue();
-            controller.filtering(aboutOrder, clientName, sttus);
-        });
-
-        ordersGrid.addSelectionListener(e -> {
-            int countRowsSelect = ordersGrid.getSelectionModel().getSelectedRows().size();
-            if (countRowsSelect == 1) {
-                updateOrderButton.setEnabled(true);
-            } else {
-                updateOrderButton.setEnabled(false);
-            }
-            if (countRowsSelect > 0) {
-                deleteOrderButton.setEnabled(true);
-            } else {
-                deleteOrderButton.setEnabled(false);
-            }
-        });
+        createListener();
 
         updateOrderButton.setEnabled(false);
         deleteOrderButton.setEnabled(false);
@@ -91,11 +64,34 @@ public class OrdersForm {
         gridLayout.addComponent(applyFilter, 0, 3);
     }
 
+    private void createListener(){
+        addOrderButton.addClickListener(clickEvent -> controller.createAddCard());
+        updateOrderButton.addClickListener(clickEvent -> {
+            Object order = ordersGrid.getSelectionModel().getSelectedRows().iterator().next();
+            controller.createUpdateCard(order);
+            ordersGrid.deselectAll();
+        });
+        deleteOrderButton.addClickListener(e -> {
+            controller.deleteRows(ordersGrid.getSelectionModel().getSelectedRows());
+            ordersGrid.deselectAll();
+        });
+
+        applyFilter.addClickListener(clickEvent -> {
+            String aboutOrder = aboutOrderFilter.getValue();
+            String clientName = clientNamesFilter.getValue();
+            String status = statusFilter.getValue();
+            controller.filtering(aboutOrder, clientName, status);
+        });
+
+        ordersGrid.addSelectionListener(e -> {
+            int countRowsSelect = ordersGrid.getSelectionModel().getSelectedRows().size();
+            viewsControl.formButtonEnable(this, countRowsSelect);
+        });
+    }
 
     private void createOrdersTable() {
         ordersGrid = new Grid(controller.getContainer());
         ordersGrid.removeColumn("client");
-        ordersGrid.removeColumn("asArrayObjects");
         ordersGrid.removeColumn("millisecondCreateDate");
         ordersGrid.removeColumn("millisecondEndDate");
         ordersGrid.setColumnOrder("orderId", "aboutOrder", "clientName", "telephone",
@@ -105,7 +101,6 @@ public class OrdersForm {
 
         ordersGrid.setImmediate(true);
         ordersGrid.setSizeFull();
-
     }
 
     private void setColumnFiltering() {
@@ -138,4 +133,25 @@ public class OrdersForm {
         });
         return filter;
     }
+
+    @Override
+    public void enableUpdateButton(){
+        updateOrderButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableUpdateButton(){
+        updateOrderButton.setEnabled(false);
+    }
+
+    @Override
+    public void enableDeleteButton(){
+        deleteOrderButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableDeleteButton(){
+        deleteOrderButton.setEnabled(false);
+    }
+
 }

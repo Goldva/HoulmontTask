@@ -1,6 +1,6 @@
 package com.haulmont.datarows;
 
-public class Client implements DataTable {
+public class Client {
     private long clientId;
     private String firstName;
     private String surName;
@@ -55,11 +55,6 @@ public class Client implements DataTable {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
-    }
-
-    @Override
-    public Object[] getAsArrayObjects() {
-        return new Object[]{clientId, firstName, surName, middleName, telephone};
     }
 
     @Override

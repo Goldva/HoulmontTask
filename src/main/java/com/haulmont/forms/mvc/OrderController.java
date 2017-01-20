@@ -5,10 +5,10 @@ import com.haulmont.datarows.Order;
 import com.haulmont.forms.Card;
 import com.haulmont.forms.OrderCard;
 import com.haulmont.forms.OrdersForm;
-import com.haulmont.utils.ClientContainer;
-import com.haulmont.utils.ClientDAO;
-import com.haulmont.utils.OrderContainer;
-import com.haulmont.utils.OrderDAO;
+import com.haulmont.utils.container.ClientContainer;
+import com.haulmont.utils.dao.ClientDAO;
+import com.haulmont.utils.container.OrderContainer;
+import com.haulmont.utils.dao.OrderDAO;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -82,25 +82,24 @@ public class OrderController {
                 client = nextClient;
 
         Order newOrder = new Order(client, orderCard.getCreateDate().getValue());
-        newOrder.setAboutOrder(orderCard.getAboutOrderArea().getValue());
-        newOrder.setEndDate(orderCard.getEndDate().getValue());
-        String price = orderCard.getPrice().getValue().replaceAll(",", "\\.");
-        newOrder.setPrice(Double.parseDouble(price));
-        newOrder.setStatus(orderCard.getStatus().getValue().toString());
-
+        refreshDataOrder(newOrder);
         orderContainer.addOrder(newOrder);
         closeCard(orderCard.getSubWindow());
     }
 
     public void updateRow(Object object) {
         Order order = (Order) object;
+        refreshDataOrder(order);
+        orderContainer.updateOrder(order);
+        closeCard(orderCard.getSubWindow());
+    }
+
+    private void refreshDataOrder(Order order){
         order.setAboutOrder(orderCard.getAboutOrderArea().getValue());
         order.setEndDate(orderCard.getEndDate().getValue());
         String price = orderCard.getPrice().getValue().replaceAll(",", "\\.");
         order.setPrice(Double.parseDouble(price));
         order.setStatus(orderCard.getStatus().getValue().toString());
-        orderContainer.updateOrder(order);
-        closeCard(orderCard.getSubWindow());
     }
 
     public void deleteRows(Collection<Object> deleteOrders) {
@@ -146,16 +145,6 @@ public class OrderController {
         Pattern pattern = Pattern.compile(".*" + regExp + ".*");
         Matcher matcher = pattern.matcher(text);
         return matcher.matches();
-    }
-
-    public void buttonOkEnabled(Card card, Button button) {
-        for (AbstractComponent component : card.getAllElements()) {
-            if (component.getErrorMessage() != null) {
-                button.setEnabled(false);
-                break;
-            } else
-                button.setEnabled(true);
-        }
     }
 
     public void closeCard(Window window) {

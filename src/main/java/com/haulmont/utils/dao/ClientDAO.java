@@ -1,4 +1,4 @@
-package com.haulmont.utils;
+package com.haulmont.utils.dao;
 
 import com.haulmont.datarows.Client;
 

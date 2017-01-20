@@ -2,6 +2,7 @@ package com.haulmont.forms;
 
 import com.haulmont.datarows.Client;
 import com.haulmont.forms.mvc.ClientController;
+import com.haulmont.forms.mvc.ViewsControl;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 
@@ -10,19 +11,21 @@ import java.util.Collection;
 
 
 public class ClientCard implements Card {
-    protected Panel panel;
-    protected ClientController controller;
+    private Panel panel;
+    private ClientController controller;
+    private ViewsControl viewsController;
     TextField firstNameField;
-    private Window subWindow;
-    private TextField surNameField;
-    private TextField middleNameField;
-    private TextField telephoneField;
-    private Button okButton;
-    private Button cancelButton;
+     Window subWindow;
+     TextField surNameField;
+     TextField middleNameField;
+     TextField telephoneField;
+     Button okButton;
+     Button cancelButton;
 
     public ClientCard(Panel panel, ClientController controller) {
         this.panel = panel;
         this.controller = controller;
+        this.viewsController = new ViewsControl();
         this.firstNameField = new TextField("First Name");
         this.surNameField = new TextField("Surname");
         this.middleNameField = new TextField("Middle Name");
@@ -55,10 +58,10 @@ public class ClientCard implements Card {
         surNameField.addValidator(new StringLengthValidator("Minimal lenght about order 2 symbols", 2, null, true));
         telephoneField.addValidator(new StringLengthValidator("Minimal lenght about order 2 symbols", 2, null, true));
 
-        formLayout.addAttachListener(attachEvent -> controller.buttonOkEnabled(this, okButton));
-        firstNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        surNameField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        telephoneField.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+        formLayout.addAttachListener(attachEvent -> viewsController.buttonOkEnabled(this));
+        firstNameField.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        surNameField.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        telephoneField.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
         cancelButton.addClickListener(e -> subWindow.close());
 
         formLayout.addComponent(firstNameField);
@@ -98,5 +101,15 @@ public class ClientCard implements Card {
     @Override
     public Collection<AbstractComponent> getAllElements() {
         return Arrays.asList(firstNameField, subWindow, middleNameField, telephoneField);
+    }
+
+    @Override
+    public void enableOkButton() {
+        okButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableOkButton() {
+        okButton.setEnabled(false);
     }
 }

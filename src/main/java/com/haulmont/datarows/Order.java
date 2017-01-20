@@ -4,7 +4,7 @@ package com.haulmont.datarows;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Order implements DataTable {
+public class Order {
     private long orderId;
     private String aboutOrder;
     private Client client;
@@ -95,11 +95,4 @@ public class Order implements DataTable {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    @Override
-    public Object[] getAsArrayObjects() {
-        return new Object[]{orderId, aboutOrder, client.getFirstName(), client.getSurName(), client.getTelephone(),
-                createDate, endDate, price, status};
-    }
-
 }

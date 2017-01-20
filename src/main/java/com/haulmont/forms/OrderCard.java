@@ -2,6 +2,7 @@ package com.haulmont.forms;
 
 import com.haulmont.datarows.Order;
 import com.haulmont.forms.mvc.OrderController;
+import com.haulmont.forms.mvc.ViewsControl;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.data.validator.StringLengthValidator;
@@ -12,16 +13,17 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 
 public class OrderCard implements Card {
-    protected Panel panel;
-    protected OrderController controller;
-    private Window subWindow;
+    private Panel panel;
+    private OrderController controller;
+    private ViewsControl viewsController;
+    Window subWindow;
 
-    private TextArea aboutOrderArea;
-    private ComboBox clientsBox;
-    private DateField createDate;
-    private DateField endDate;
-    private TextField price;
-    private ComboBox status;
+     TextArea aboutOrderArea;
+     ComboBox clientsBox;
+     DateField createDate;
+     DateField endDate;
+     TextField price;
+     ComboBox status;
 
     private Button okButton;
     private Button cancelButton;
@@ -29,6 +31,7 @@ public class OrderCard implements Card {
     public OrderCard(Panel panel, OrderController orderController) {
         this.panel = panel;
         this.controller = orderController;
+        this.viewsController = new ViewsControl();
         this.aboutOrderArea = new TextArea("About order");
         this.clientsBox = new ComboBox("Clients");
         this.createDate = new DateField("Date create order", new ObjectProperty<>(new GregorianCalendar().getTime()));
@@ -74,13 +77,13 @@ public class OrderCard implements Card {
         price.addValidator(new NullValidator("Field should not be empty", false));
         status.addValidator(new NullValidator("Field should not be empty", false));
 
-        formLayout.addAttachListener(attachEvent -> controller.buttonOkEnabled(this, okButton));
-        aboutOrderArea.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        clientsBox.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        createDate.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        endDate.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        price.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
-        status.addValueChangeListener(event -> controller.buttonOkEnabled(this, okButton));
+        formLayout.addAttachListener(attachEvent -> viewsController.buttonOkEnabled(this));
+        aboutOrderArea.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        clientsBox.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        createDate.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        endDate.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        price.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
+        status.addValueChangeListener(event -> viewsController.buttonOkEnabled(this));
         cancelButton.addClickListener(e -> controller.closeCard(subWindow));
 
         status.addItems(Arrays.asList("Запланирован", "Выполнен", "Принят клиентом"));
@@ -132,5 +135,15 @@ public class OrderCard implements Card {
     @Override
     public Collection<AbstractComponent> getAllElements() {
         return Arrays.asList(aboutOrderArea, clientsBox, createDate, endDate, price, status);
+    }
+
+    @Override
+    public void enableOkButton() {
+        okButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableOkButton() {
+        okButton.setEnabled(false);
     }
 }

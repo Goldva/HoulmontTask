@@ -4,8 +4,8 @@ import com.haulmont.datarows.Client;
 import com.haulmont.forms.Card;
 import com.haulmont.forms.ClientCard;
 import com.haulmont.forms.ClientsForm;
-import com.haulmont.utils.ClientContainer;
-import com.haulmont.utils.ClientDAO;
+import com.haulmont.utils.container.ClientContainer;
+import com.haulmont.utils.dao.ClientDAO;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
@@ -58,36 +58,27 @@ public class ClientController {
 
     public void addRow() {
         Client client = new Client();
-        client.setFirstName(clientCard.getFirstNameField().getValue());
-        client.setSurName(clientCard.getSurNameField().getValue());
-        client.setMiddleName(clientCard.getMiddleNameField().getValue());
-        client.setTelephone(clientCard.getTelephoneField().getValue());
+        refreshDataClient(client);
         container.addClient(client);
         clientCard.getSubWindow().close();
     }
 
     public void updateRow(Object object) {
         Client client = (Client) object;
-        client.setFirstName(clientCard.getFirstNameField().getValue());
-        client.setSurName(clientCard.getSurNameField().getValue());
-        client.setMiddleName(clientCard.getMiddleNameField().getValue());
-        client.setTelephone(clientCard.getTelephoneField().getValue());
+        refreshDataClient(client);
         container.updateClient(client);
         clientCard.getSubWindow().close();
     }
 
-    public void deleteRows(Collection<Object> deleteClients) {
-        container.deleteClients(deleteClients);
+    private void refreshDataClient(Client client){
+        client.setFirstName(clientCard.getFirstNameField().getValue());
+        client.setSurName(clientCard.getSurNameField().getValue());
+        client.setMiddleName(clientCard.getMiddleNameField().getValue());
+        client.setTelephone(clientCard.getTelephoneField().getValue());
     }
 
-    public void buttonOkEnabled(Card card, Button button) {
-        for (AbstractComponent component : card.getAllElements()) {
-            if (component.getErrorMessage() != null) {
-                button.setEnabled(false);
-                break;
-            } else
-                button.setEnabled(true);
-        }
+    public void deleteRows(Collection<Object> deleteClients) {
+        container.deleteClients(deleteClients);
     }
 
     public BeanItemContainer<Client> getContainer() {
