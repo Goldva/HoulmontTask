@@ -31,7 +31,7 @@ public class OrderController {
     private OrdersForm ordersForm;
     private OrderCard orderCard;
 
-    public OrderController() {
+    private OrderController() {
         try {
             orderContainer = new OrderContainer(new OrderDAO());
             clientContainer = new ClientContainer(new ClientDAO());

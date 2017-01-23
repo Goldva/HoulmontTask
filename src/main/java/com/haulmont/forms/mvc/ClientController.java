@@ -18,7 +18,7 @@ public class ClientController {
     private ClientsForm clientsForm;
     private ClientCard clientCard;
 
-    public ClientController() {
+    private ClientController() {
         try {
             container = new ClientContainer(new ClientDAO());
         } catch (ClassNotFoundException | SQLException e) {
